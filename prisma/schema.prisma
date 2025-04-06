@@ -20,9 +20,11 @@ model Usuario {
   senha          String?      @unique
   email          String?      @unique
   categorias     Categoria[]
-  despesas       Despesa[]
-  receitas       Receita[]
-  parcelas       Parcela[]
+  despesas       Despesas[]
+  receitas       Receitas[]
+  parcelas       Parcelas[]
+
+  @@map("usuario")
 }
 
 model Categoria {
@@ -30,11 +32,13 @@ model Categoria {
   descricao_categoria   String    
   id_usuario            Int
   usuario               Usuario     @relation(fields: [id_usuario], references: [id_usuario])
-  despesas              Despesa[]
-  receitas              Receita[]
+  despesas              Despesas[]
+  receitas              Receitas[]
+
+  @@map("categoria")
 }
 
-model Despesa {
+model Despesas {
   id_despesa        Int         @id @default(autoincrement())
   data_da_despesa   DateTime?  
   descricao_despesa String    
@@ -44,10 +48,12 @@ model Despesa {
   id_categoria      Int
   usuario           Usuario     @relation(fields: [id_usuario], references: [id_usuario])
   categoria         Categoria   @relation(fields: [id_categoria], references: [id_categoria])
-  parcelas          Parcela[]
+  parcelas          Parcelas[]
+
+  @@map("despesas")
 }
 
-model Receita {
+model Receitas {
   id_receita          Int         @id @default(autoincrement())
   data_da_receita     DateTime?  
   descricao_receitas  String?    
@@ -56,10 +62,12 @@ model Receita {
   id_categoria        Int
   usuario             Usuario     @relation(fields: [id_usuario], references: [id_usuario])
   categoria           Categoria   @relation(fields: [id_categoria], references: [id_categoria])
-  parcelas            Parcela[]
+  parcelas            Parcelas[]
+
+  @@map("receitas")
 }
 
-model Parcela {
+model Parcelas {
   id_parcelas       Int         @id @default(autoincrement())
   data_da_parcela   DateTime?  
   numero_da_parcela Int    
@@ -67,6 +75,8 @@ model Parcela {
   id_receitas       Int
   id_despesas       Int
   usuario           Usuario     @relation(fields: [id_usuario], references: [id_usuario])
-  receita           Receita?    @relation(fields: [id_receitas], references: [id_receita])
-  despesa           Despesa?    @relation(fields: [id_despesas], references: [id_despesa])
+  receita           Receitas?    @relation(fields: [id_receitas], references: [id_receita])
+  despesa           Despesas?    @relation(fields: [id_despesas], references: [id_despesa])
+
+  @@map("parcelas")
 }
