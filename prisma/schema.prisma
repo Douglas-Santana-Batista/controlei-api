@@ -8,75 +8,108 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  description String
+  amount      Decimal
+  type        String
+  createdAt   DateTime @default(now())
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
-  id_usuario     Int          @id @default(autoincrement())
-  cpf            String?      @unique
-  nome           String?    
-  senha          String?      @unique
-  email          String?      @unique
-  categorias     Categoria[]
-  despesas       Despesas[]
-  receitas       Receitas[]
-  parcelas       Parcelas[]
-
-  @@map("usuario")
+enum TipoPagamento {
+  DEBITO
+  CREDITO
 }
 
-model Categoria {
-  id_categoria          Int         @id @default(autoincrement())
-  descricao_categoria   String    
-  id_usuario            Int
-  usuario               Usuario     @relation(fields: [id_usuario], references: [id_usuario])
-  despesas              Despesas[]
-  receitas              Receitas[]
+model Usuarios {
+  id_usuario    Int             @id @default(autoincrement())
+  cpf           String?         @unique
+  nome          String?
+  senha         String?         
+  email         String?         @unique
+  categorias    Categorias[]
+  despesas      Despesas[]
+  receitas      Receitas[]
+  parcelas      Parcelas[]
+  Subcategorias Subcategorias[]
 
-  @@map("categoria")
+  @@map("usuarios")
+}
+
+model Categorias {
+  id_categoria        Int             @id @default(autoincrement())
+  descricao_categoria String
+  id_usuario          Int
+  usuario             Usuarios        @relation(fields: [id_usuario], references: [id_usuario])
+  despesas            Despesas[]
+  receitas            Receitas[]
+  Subcategorias       Subcategorias[]
+
+  @@map("categorias")
+}
+
+model Subcategorias {
+  id_subcategoria        Int        @id @default(autoincrement())
+  descricao_subcategoria String
+  id_categoria           Int
+  id_usuario             Int
+  categoria              Categorias @relation(fields: [id_categoria], references: [id_categoria])
+  usuario                Usuarios   @relation(fields: [id_usuario], references: [id_usuario])
+  despesas               Despesas[]
+  receitas               Receitas[]
+
+  @@map("subcategorias")
 }
 
 model Despesas {
-  id_despesa        Int         @id @default(autoincrement())
-  data_da_despesa   DateTime?  
-  descricao_despesa String    
-  valor             Float    
-  parcela           String?    
-  id_usuario        Int
-  id_categoria      Int
-  usuario           Usuario     @relation(fields: [id_usuario], references: [id_usuario])
-  categoria         Categoria   @relation(fields: [id_categoria], references: [id_categoria])
-  parcelas          Parcelas[]
+  id_despesa                   Int            @id @default(autoincrement())
+  data_da_despesa              DateTime?
+  descricao_despesa            String
+  valor                        Float
+  parcela                      String?
+  tipo_pagamento               TipoPagamento  @default(DEBITO)
+  id_usuario                   Int
+  id_categoria                 Int
+  usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario])
+  categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria])
+  parcelas                     Parcelas[]
+  Subcategorias                Subcategorias? @relation(fields: [subcategoriasId_subcategoria], references: [id_subcategoria])
+  subcategoriasId_subcategoria Int?
 
   @@map("despesas")
 }
 
 model Receitas {
-  id_receita          Int         @id @default(autoincrement())
-  data_da_receita     DateTime?  
-  descricao_receitas  String?    
-  valor               Float  
-  id_usuario          Int
-  id_categoria        Int
-  usuario             Usuario     @relation(fields: [id_usuario], references: [id_usuario])
-  categoria           Categoria   @relation(fields: [id_categoria], references: [id_categoria])
-  parcelas            Parcelas[]
+  id_receita                   Int            @id @default(autoincrement())
+  data_da_receita              DateTime?
+  descricao_receitas           String?
+  valor                        Float
+  id_usuario                   Int
+  id_categoria                 Int
+  usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario])
+  categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria])
+  parcelas                     Parcelas[]
+  Subcategorias                Subcategorias? @relation(fields: [subcategoriasId_subcategoria], references: [id_subcategoria])
+  subcategoriasId_subcategoria Int?
 
   @@map("receitas")
 }
 
 model Parcelas {
-  id_parcelas       Int         @id @default(autoincrement())
-  data_da_parcela   DateTime?  
-  numero_da_parcela Int    
+  id_parcelas       Int       @id @default(autoincrement())
+  data_da_parcela   DateTime?
+  numero_da_parcela Int
   id_usuario        Int
   id_receitas       Int
   id_despesas       Int
-  usuario           Usuario     @relation(fields: [id_usuario], references: [id_usuario])
-  receita           Receitas?    @relation(fields: [id_receitas], references: [id_receita])
-  despesa           Despesas?    @relation(fields: [id_despesas], references: [id_despesa])
+  usuario           Usuarios  @relation(fields: [id_usuario], references: [id_usuario])
+  receita           Receitas? @relation(fields: [id_receitas], references: [id_receita])
+  despesa           Despesas? @relation(fields: [id_despesas], references: [id_despesa])
 
   @@map("parcelas")
 }
