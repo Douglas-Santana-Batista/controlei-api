@@ -30,7 +30,7 @@ model Usuarios {
   id_usuario    Int             @id @default(autoincrement())
   cpf           String?         @unique
   nome          String?
-  senha         String?         
+  senha         String?
   email         String?         @unique
   categorias    Categorias[]
   despesas      Despesas[]
@@ -45,7 +45,7 @@ model Categorias {
   id_categoria        Int             @id @default(autoincrement())
   descricao_categoria String
   id_usuario          Int
-  usuario             Usuarios        @relation(fields: [id_usuario], references: [id_usuario])
+  usuario             Usuarios        @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   despesas            Despesas[]
   receitas            Receitas[]
   Subcategorias       Subcategorias[]
@@ -59,7 +59,7 @@ model Subcategorias {
   id_categoria           Int
   id_usuario             Int
   categoria              Categorias @relation(fields: [id_categoria], references: [id_categoria])
-  usuario                Usuarios   @relation(fields: [id_usuario], references: [id_usuario])
+  usuario                Usuarios   @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   despesas               Despesas[]
   receitas               Receitas[]
 
@@ -75,7 +75,7 @@ model Despesas {
   tipo_pagamento               TipoPagamento  @default(DEBITO)
   id_usuario                   Int
   id_categoria                 Int
-  usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario])
+  usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria])
   parcelas                     Parcelas[]
   Subcategorias                Subcategorias? @relation(fields: [subcategoriasId_subcategoria], references: [id_subcategoria])
@@ -91,7 +91,7 @@ model Receitas {
   valor                        Float
   id_usuario                   Int
   id_categoria                 Int
-  usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario])
+  usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria])
   parcelas                     Parcelas[]
   Subcategorias                Subcategorias? @relation(fields: [subcategoriasId_subcategoria], references: [id_subcategoria])
@@ -107,7 +107,7 @@ model Parcelas {
   id_usuario        Int
   id_receitas       Int
   id_despesas       Int
-  usuario           Usuarios  @relation(fields: [id_usuario], references: [id_usuario])
+  usuario           Usuarios  @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   receita           Receitas? @relation(fields: [id_receitas], references: [id_receita])
   despesa           Despesas? @relation(fields: [id_despesas], references: [id_despesa])
 

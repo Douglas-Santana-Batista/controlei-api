@@ -1,20 +1,24 @@
-import { Request, Response, RequestHandler } from 'express'
+import { Request, Response, RequestHandler, NextFunction } from 'express'
 import prisma from '../prisma'
-import { Prisma } from '@prisma/client';
 import bcrypt from 'bcrypt';
+import { UserCreateSchema, userIdParamsSchema } from '../schemas/userSchema';
 
-export const createUser: RequestHandler = async (req: Request, res: Response) => {
-
-    const { cpf, nome, senha, email } = req.body;
-
-    if (!nome || !email || !senha || !cpf) {
-        res.status(400).json({ error: "Todos os campos devem ser preenchidos" });
-    }
+export const createUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
 
-        const saltRounds = 10;
-        const hashPassword = await bcrypt.hash(req.body.senha, saltRounds)
+        const validation = UserCreateSchema.safeParse(req.body)
+
+        if (!validation.success) {
+            const error = new Error("Invalid data");
+            error.name = "ValidationError";
+            (error as any).details = validation.error.flatten();
+            return next(error);
+        }
+
+        const { cpf, nome, senha, email } = validation.data;
+        
+        const hashPassword = await bcrypt.hash(senha, 10)
 
         const novoUsuario = await prisma.usuarios.create({
             data: { nome, email, senha: hashPassword, cpf },
@@ -25,72 +29,68 @@ export const createUser: RequestHandler = async (req: Request, res: Response) =>
             }
         });
 
-
         res.status(201).json(novoUsuario);
-
+        return;
     } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === 'P2002') {
-                res.status(409).json({
-                    error: 'Já existe um usuário com este email ou cpf'
-                });
-            }
-        }
+        return next(error);
     }
-
 }
 
-export const getallUser: RequestHandler = async (req: Request, res: Response) => {
+export const getallUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const mostrartodosUsuarios = await prisma.usuarios.findMany()
 
         if (mostrartodosUsuarios.length === 0) {
-            res.status(404).json({ message: "consulta  realizada com sucesso, mas não tem usuarios." })
+            const error = new Error('There are no registered users')
+            return next(error);
         }
 
         res.json(mostrartodosUsuarios);
+        return;
 
     } catch (error) {
-        res.status(500).json({ message: "Não foi possível fazer a busca, tente novamente" });
+        return next(error);
     }
 
 }
 
-export const deleteAllUsers: RequestHandler = async (req: Request, res: Response) => {
+// remover depois
+export const deleteAllUsers: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
         await prisma.usuarios.deleteMany()
 
         res.status(200).json({ message: "Todos os usuários deletados com sucesso." })
+        return;
 
     } catch (error) {
-
-        res.status(500).json({ message: "erro, tente novamente" })
+        return next(error);
     }
 }
 
-export const deleteUserByid: RequestHandler = async (req: Request, res: Response) => {
+export const deleteUserByid: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
 
-        const { id_usuario } = req.params;
+        const validation = userIdParamsSchema.safeParse(req.params)
 
-        if (!id_usuario) {
-            res.status(400).json({ message: "usuário não fornecido" })
+        if (!validation.success) {
+            const error = new Error("Invalid data");
+            error.name = "ValidationError";
+            (error as any).details = validation.error.flatten();
+            return next(error);
         }
+
+        const { id_usuario } = validation.data
 
         const deleteUser = await prisma.usuarios.delete({
             where: { id_usuario: Number(id_usuario) },
         })
 
-        res.status(200).json({ message: "Ususário deletado com sucesso", deleteUser })
+        res.status(200).json({ message: "User deleted successfully", deleteUser })
     } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === 'P2025') {
-                res.status(404).json({ message: "Usuário não encontrado" });
-            }
-        }
+        return next(error)
     }
 
 }
