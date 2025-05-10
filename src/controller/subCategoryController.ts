@@ -25,7 +25,7 @@ export const createsubCategory: RequestHandler = async (req: Request, res: Respo
             data: {
                 descricao_subcategoria,
                 usuario: {
-                    connect: { id_usuario:idUser }
+                    connect: { id_usuario:idUser } 
                 },
                 categoria: {
                     connect: { id_categoria:idCategory }
