@@ -8,3 +8,6 @@ export const subCategorySchema = z.object({
     .trim()
     .toLowerCase(),
 })
+export const subcategoryIdParamsSchema = z.object({
+    id_usuario: z.string().regex(/^\d+$/, "ID must be a number")
+});
