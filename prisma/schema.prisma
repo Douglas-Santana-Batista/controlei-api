@@ -46,8 +46,8 @@ model Categorias {
   descricao_categoria String
   id_usuario          Int
   usuario             Usuarios        @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
-  despesas            Despesas[]
-  receitas            Receitas[]
+  despesas            Despesas[]      
+  receitas            Receitas[]      
   Subcategorias       Subcategorias[]
 
   @@map("categorias")
@@ -58,7 +58,7 @@ model Subcategorias {
   descricao_subcategoria String
   id_categoria           Int
   id_usuario             Int
-  categoria              Categorias @relation(fields: [id_categoria], references: [id_categoria])
+  categoria              Categorias @relation(fields: [id_categoria], references: [id_categoria], onDelete: Cascade)
   usuario                Usuarios   @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   despesas               Despesas[]
   receitas               Receitas[]
@@ -76,7 +76,7 @@ model Despesas {
   id_usuario                   Int
   id_categoria                 Int
   usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
-  categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria])
+  categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria], onDelete: Cascade)
   parcelas                     Parcelas[]
   Subcategorias                Subcategorias? @relation(fields: [subcategoriasId_subcategoria], references: [id_subcategoria])
   subcategoriasId_subcategoria Int?
@@ -92,7 +92,7 @@ model Receitas {
   id_usuario                   Int
   id_categoria                 Int
   usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
-  categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria])
+  categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria], onDelete: Cascade)
   parcelas                     Parcelas[]
   Subcategorias                Subcategorias? @relation(fields: [subcategoriasId_subcategoria], references: [id_subcategoria])
   subcategoriasId_subcategoria Int?
