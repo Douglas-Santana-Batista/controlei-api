@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { createUser, deleteUserByid, getallUser, deleteAllUsers } from "./controller/userController";
 import { createCategory, deleteCategory, getAllCategory, updateCategory } from "./controller/categoriaController";
-import { createsubCategory, deletesubCategory, getAllsubCategory } from "./controller/subCategoryController";
+import { createsubCategory, deletesubCategory, getAllsubCategory, updatesubCategory } from "./controller/subCategoryController";
 
 
 export const router = Router();
@@ -22,3 +22,4 @@ router.delete("/deleteCategory/:id_categoria",deleteCategory)
 router.post("/createSubCategory/:id_usuario/:id_catedoria", createsubCategory)
 router.get("/getAllsubCategory", getAllsubCategory)
 router.delete("/deletesubCategory/:id_usuario/:id_subcategoria", deletesubCategory)
+router.put("/updatesubCategory/:id_usuario/:id_subcategoria", updatesubCategory)

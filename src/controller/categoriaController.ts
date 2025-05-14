@@ -6,18 +6,10 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
 
     try {
 
-        const validation = categoryCreatSchema.safeParse(req.body)
+        const validation = categoryCreatSchema.parse(req.body)
         const id_usuario = parseInt(req.params.id_usuario)
 
-        if (!validation.success) {
-            const error = new Error("Invalid description");
-            error.name = "ValidationError";
-            (error as any).details = validation.error.flatten();
-            return next(error);
-        }
-
-        const { descricao_categoria } = validation.data
-
+        const { descricao_categoria } = validation
 
         const newCategory = await prisma.categorias.create({
             data: {
@@ -29,7 +21,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 }
             }
         })
-        res.status(201).json(newCategory)
+        res.status(201).json({message: "Category created successfully",newCategory})
         return
     } catch (error) {
         next(error)
@@ -40,30 +32,19 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
 export const updateCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const {id_usuario, id_categoria} = req.params;
+        const { id_usuario, id_categoria } = req.params;
+        const validation = categoryUpdateSchema.parse(req.body)
 
-        const validation = categoryUpdateSchema.safeParse(req.body)
-
-        if (!validation.success) {
-            const error = new Error("Invalid description");
-            error.name = "ValidationError";
-            (error as any).details = validation.error.flatten();
-            return next(error);
-        }
-
-        const { descricao_categoria } = validation.data
-
-        const usuarioId = parseInt(id_usuario)
-        const categoriaId = parseInt(id_categoria)
+        const { descricao_categoria } = validation
 
         const newName = await prisma.categorias.update({
             where: {
-                id_usuario:usuarioId,
-                id_categoria:categoriaId
+                id_usuario: Number(id_usuario),
+                id_categoria: Number(id_categoria)
             },
             data: { descricao_categoria }
         })
-        res.status(200).json(newName)
+        res.status(200).json({message: "Category audated successfully",newName})
         return;
     } catch (error) {
         next(error)
@@ -75,8 +56,8 @@ export const getAllCategory: RequestHandler = async (req: Request, res: Response
     try {
         const allCategory = await prisma.categorias.findMany()
 
-        if(allCategory.length === 0){
-            const error = new Error ("There are no registered category")
+        if (allCategory.length === 0) {
+            const error = new Error("There are no registered category")
             return next(error);
         }
 
@@ -89,25 +70,18 @@ export const getAllCategory: RequestHandler = async (req: Request, res: Response
 export const deleteCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        
-        const validation = categoryIdParamsSchema.safeParse(req.params)
 
-        if(!validation.success){
-        const error = new Error ("Invalid id")
-        error.name = "validation error";
-        (error as any).details= validation.error.flatten()
-        return next(error)
-        }
+        const validation = categoryIdParamsSchema.parse(req.params)
 
-        const { id_categoria } = validation.data
+        const { id_categoria } = validation
 
         const idCategory = parseInt(id_categoria)
 
         const deleteCategory = await prisma.categorias.delete({
-            where:{ id_categoria: idCategory}
+            where: { id_categoria: idCategory }
         })
 
-        res.status(200).json({message: "category deleted successfully",deleteCategory})
+        res.status(200).json({ message: "category deleted successfully", deleteCategory })
 
     } catch (error) {
         next(error)
