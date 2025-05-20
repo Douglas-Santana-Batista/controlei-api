@@ -1,7 +1,7 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
 import { subcategoryIdParamsSchema, subCategorySchema } from '../schemas/subCategorySchema'
 import prisma from '../prisma'
-import { string } from 'zod'
+
 
 
 export const createsubCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
