@@ -2,7 +2,7 @@ import { Router } from "express";
 import { createUser, deleteUserByid, getallUser, deleteAllUsers } from "./controller/userController";
 import { createCategory, deleteCategory, getAllCategory, updateCategory } from "./controller/categoriaController";
 import { createsubCategory, deletesubCategory, getAllsubCategory, updatesubCategory } from "./controller/subCategoryController";
-import { createExpense } from "./controller/despesasController";
+import { createExpense, getAllExpense } from "./controller/despesasController";
 
 
 export const router = Router();
@@ -27,3 +27,4 @@ router.put("/updatesubCategory/:id_usuario/:id_subcategoria", updatesubCategory)
 
 //expense routers
 router.post("/createExpense/:id_usuario/:id_categoria", createExpense)
+router.post("/getAllExpense", getAllExpense)
