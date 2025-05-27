@@ -17,13 +17,15 @@ model Transaction {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 enum TipoPagamento {
-  DEBITO
   CREDITO
+  DEBITO
+  BOLETO
+  PIX
 }
 
 model Usuarios {
@@ -46,8 +48,8 @@ model Categorias {
   descricao_categoria String
   id_usuario          Int
   usuario             Usuarios        @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
-  despesas            Despesas[]      
-  receitas            Receitas[]      
+  despesas            Despesas[]
+  receitas            Receitas[]
   Subcategorias       Subcategorias[]
 
   @@map("categorias")
@@ -68,10 +70,10 @@ model Subcategorias {
 
 model Despesas {
   id_despesa                   Int            @id @default(autoincrement())
-  data_da_despesa              DateTime?
+  data_da_despesa              DateTime       @default(dbgenerated("CURRENT_DATE"))
   descricao_despesa            String
   valor                        Float
-  parcela                      String?
+  parcela                      Int?
   tipo_pagamento               TipoPagamento  @default(DEBITO)
   id_usuario                   Int
   id_categoria                 Int
@@ -86,7 +88,7 @@ model Despesas {
 
 model Receitas {
   id_receita                   Int            @id @default(autoincrement())
-  data_da_receita              DateTime?
+  data_da_receita              DateTime       @default(dbgenerated("CURRENT_DATE"))
   descricao_receitas           String?
   valor                        Float
   id_usuario                   Int
@@ -102,7 +104,7 @@ model Receitas {
 
 model Parcelas {
   id_parcelas       Int       @id @default(autoincrement())
-  data_da_parcela   DateTime?
+  data_da_parcela   DateTime  @default(dbgenerated("CURRENT_DATE"))
   numero_da_parcela Int
   id_usuario        Int
   id_receitas       Int

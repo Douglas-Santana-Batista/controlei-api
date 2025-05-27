@@ -1,14 +1,22 @@
 import { z } from 'zod'
 
-export const subCategorySchema = z.object({
-    descricao_subcategoria:z.string({
-        required_error: "description is mandatory"
-    })
+
+const bodySchema = z.string({required_error: "description is mandatory"})
     .min(1,"Subcategory must be at least 2 characters long")
-    .trim()
-    .toLowerCase(),
+    .trim().toLowerCase().min(1,"Subcategory must be at least 2 characters long")
+
+const idSchema = z.coerce.number().positive()
+
+export const subcategoryupdateParamsSchema = z.object({
+    id_subcategoria:idSchema,
+    id_usuario:idSchema
 })
+
 export const subcategoryIdParamsSchema = z.object({
-    id_usuario: z.coerce.number().positive(),
-    id_subcategoria: z.coerce.number().positive()
-});
+    id_usuario: idSchema,
+    id_categoria: idSchema
+})
+
+export const subCategorybodySchema = z.object({
+    descricao_subcategoria:bodySchema
+})

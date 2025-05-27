@@ -7,21 +7,12 @@ export const createUser: RequestHandler = async (req: Request, res: Response, ne
 
     try {
 
-        const validation = UserCreateSchema.safeParse(req.body)
-
-        if (!validation.success) {
-            const error = new Error("Invalid data");
-            error.name = "ValidationError";
-            (error as any).details = validation.error.flatten();
-            return next(error);
-        }
-
-        const { cpf, nome, senha, email } = validation.data;
+        const { cpf, nome, senha, email } = UserCreateSchema.parse(req.body)
 
         const hashPassword = await bcrypt.hash(senha, 10)
 
         const novoUsuario = await prisma.usuarios.create({
-            data: { nome, email, senha: hashPassword, cpf },
+            data: { nome, email, senha:hashPassword, cpf },
             select: {
                 id_usuario: true,
                 nome: true,
@@ -73,9 +64,7 @@ export const deleteUserByid: RequestHandler = async (req: Request, res: Response
 
     try {
 
-        const validation = userIdParamsSchema.parse(req.params)
-
-        const { id_usuario } = validation
+        const { id_usuario } = userIdParamsSchema.parse(req.params)
 
         const deleteUser = await prisma.usuarios.delete({
             where: { id_usuario: Number(id_usuario) },

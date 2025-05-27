@@ -18,7 +18,6 @@ export const UserCreateSchema = z.object({
     cpf:z.string()
         .length(11,"CPF must have 11 digits")
         .regex(/^\d+$/,"CPF must contain only numbers")
-
 })
 
 export const userIdParamsSchema = z.object({

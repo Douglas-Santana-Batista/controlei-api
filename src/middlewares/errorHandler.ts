@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction, response, ErrorRequestHandler } from "express";
+import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 interface AppError extends Error {

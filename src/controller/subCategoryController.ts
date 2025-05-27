@@ -1,35 +1,22 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
-import { subcategoryIdParamsSchema, subCategorySchema } from '../schemas/subCategorySchema'
+import { subcategoryIdParamsSchema, subCategorybodySchema, subcategoryupdateParamsSchema } from '../schemas/subCategorySchema'
 import prisma from '../prisma'
 
 
 
 export const createsubCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const validation = subCategorySchema.safeParse(req.body)
-        const id_usuario = req.params.id_usuario;
-        const id_categoria = req.params.id_catedoria;
-
-        if (!validation.success) {
-            const error = new Error("Invalid description");
-            error.name = "ValidationError";
-            (error as any).details = validation.error.flatten();
-            return next(error);
-        }
-
-        const { descricao_subcategoria } = validation.data
-
-        const idUser = parseInt(id_usuario)
-        const idCategory = parseInt(id_categoria)
+        const { descricao_subcategoria } = subCategorybodySchema.parse(req.body)
+        const { id_usuario, id_categoria } = subcategoryIdParamsSchema.parse(req.params)
 
         const createsubCategory = await prisma.subcategorias.create({
             data: {
                 descricao_subcategoria,
                 usuario: {
-                    connect: { id_usuario: idUser }
+                    connect: { id_usuario }
                 },
                 categoria: {
-                    connect: { id_categoria: idCategory }
+                    connect: { id_categoria }
                 }
             }
         })
@@ -42,7 +29,6 @@ export const createsubCategory: RequestHandler = async (req: Request, res: Respo
 
 export const getAllsubCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-
         const allSubCategory = await prisma.subcategorias.findMany()
 
         if (allSubCategory.length === 0) {
@@ -51,7 +37,6 @@ export const getAllsubCategory: RequestHandler = async (req: Request, res: Respo
         }
 
         res.status(201).json(allSubCategory)
-
     } catch (error) {
         next(error)
     }
@@ -59,13 +44,8 @@ export const getAllsubCategory: RequestHandler = async (req: Request, res: Respo
 
 export const updatesubCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const validationId = subcategoryIdParamsSchema.parse(req.params)
-        const validarionBody =  subCategorySchema.parse(req.body)
-
-        
-        const { id_usuario, id_subcategoria } = validationId
-        const { descricao_subcategoria } = validarionBody
-
+        const { id_usuario, id_subcategoria } = subcategoryupdateParamsSchema.parse(req.params)
+        const { descricao_subcategoria } =  subCategorybodySchema.parse(req.body)
 
         const updatesubCategory = await prisma.subcategorias.update({
             where: {
@@ -84,22 +64,10 @@ export const updatesubCategory: RequestHandler = async (req: Request, res: Respo
 
 export const deletesubCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id_usuario, id_subcategoria} = req.params
-
-        const validation = subcategoryIdParamsSchema.safeParse(req.params)
-
-        if (!validation.success) {
-            const error = new Error("Invalid id")
-            error.name = "validation error";
-            (error as any).details = validation.error.flatten()
-            return next(error)
-        }
-
-        const idUser = parseInt(id_usuario)
-        const idSubCategory = parseInt(id_subcategoria)
+        const { id_usuario, id_subcategoria} = subcategoryupdateParamsSchema.parse(req.params)
 
         const deletesubCategory = await prisma.subcategorias.delete({
-            where: { id_subcategoria: idSubCategory, id_usuario: idUser }
+            where: { id_subcategoria, id_usuario }
         })
 
         res.status(201).json({ message: " Subcategory deleted successfully ", deletesubCategory })

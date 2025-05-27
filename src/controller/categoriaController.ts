@@ -1,15 +1,12 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
 import prisma from '../prisma'
-import { categoryCreatSchema, categoryUpdateSchema, categoryIdParamsSchema } from '../schemas/categorySchema'
+import { categoryCreatSchema, categoryUpdateSchema, categoryIduserParamsSchema, categoryIdcategoryParamsSchema, categoryidUpdate } from '../schemas/categorySchema'
 
 export const createCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-
-        const validation = categoryCreatSchema.parse(req.body)
-        const id_usuario = parseInt(req.params.id_usuario)
-
-        const { descricao_categoria } = validation
+        const { descricao_categoria } = categoryCreatSchema.parse(req.body)
+        const { id_usuario } = categoryIduserParamsSchema.parse(req.params)
 
         const newCategory = await prisma.categorias.create({
             data: {
@@ -21,7 +18,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
                 }
             }
         })
-        res.status(201).json({message: "Category created successfully",newCategory})
+        res.status(201).json({ message: "Category created successfully", newCategory })
         return
     } catch (error) {
         next(error)
@@ -32,10 +29,8 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
 export const updateCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const { id_usuario, id_categoria } = req.params;
-        const validation = categoryUpdateSchema.parse(req.body)
-
-        const { descricao_categoria } = validation
+        const { id_usuario, id_categoria } = categoryidUpdate.parse(req.params);
+        const { descricao_categoria } = categoryUpdateSchema.parse(req.body)
 
         const newName = await prisma.categorias.update({
             where: {
@@ -44,7 +39,7 @@ export const updateCategory: RequestHandler = async (req: Request, res: Response
             },
             data: { descricao_categoria }
         })
-        res.status(200).json({message: "Category audated successfully",newName})
+        res.status(200).json({ message: "Category audated successfully", newName })
         return;
     } catch (error) {
         next(error)
@@ -70,15 +65,10 @@ export const getAllCategory: RequestHandler = async (req: Request, res: Response
 export const deleteCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-
-        const validation = categoryIdParamsSchema.parse(req.params)
-
-        const { id_categoria } = validation
-
-        const idCategory = parseInt(id_categoria)
+        const { id_categoria } = categoryIdcategoryParamsSchema.parse(req.params)
 
         const deleteCategory = await prisma.categorias.delete({
-            where: { id_categoria: idCategory }
+            where: { id_categoria }
         })
 
         res.status(200).json({ message: "category deleted successfully", deleteCategory })
