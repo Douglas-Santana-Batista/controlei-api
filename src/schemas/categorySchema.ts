@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { idSchema } from './shared.schema'
 
 const categoriaBodySchema =z.object({
-    descricao_categoria:z.string({
+    category_description:z.string({
         required_error: "description is mandatory"
     })
     .min(3,"Name must be at least 3 characters long")
@@ -13,6 +13,6 @@ const categoriaBodySchema =z.object({
 export const validationcategorybodySchema = categoriaBodySchema
 
 export const validationIdcategoryParamsSchema = z.object({
-    id_categoria:idSchema,
-    id_usuario:idSchema
+    id_category:idSchema,
+    id_user:idSchema
 })

@@ -1,5 +1,5 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
-import prisma from '../prisma'
+import prisma from '../models/prisma'
 import bcrypt from 'bcrypt';
 import { updateUserSchema, UserCreateSchema, userIdParamsSchema } from '../schemas/userSchema';
 import { AppError } from '../utils/AppError';
@@ -7,14 +7,14 @@ import { AppError } from '../utils/AppError';
 export const createUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const { cpf, nome, senha, email } = UserCreateSchema.parse(req.body)
-        const hashPassword = await bcrypt.hash(senha, 10)
+        const { cpf, name, password, email } = UserCreateSchema.parse(req.body)
+        const hashPassword = await bcrypt.hash(password, 10)
 
-        const novoUsuario = await prisma.usuarios.create({
-            data: { nome, email, senha: hashPassword, cpf },
+        const novoUsuario = await prisma.user.create({
+            data: { name, email, password: hashPassword, cpf },
             select: {
-                id_usuario: true,
-                nome: true,
+                id_user: true,
+                name: true,
                 email: true
             }
         });
@@ -27,7 +27,7 @@ export const createUser: RequestHandler = async (req: Request, res: Response, ne
 export const getallUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const mostrartodosUsuarios = await prisma.usuarios.findMany()
+        const mostrartodosUsuarios = await prisma.user.findMany()
 
         if (mostrartodosUsuarios.length === 0) {
             throw new AppError("There are no registered users", 404)
@@ -40,24 +40,13 @@ export const getallUser: RequestHandler = async (req: Request, res: Response, ne
 
 }
 
-// remover depois
-export const deleteAllUsers: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        await prisma.usuarios.deleteMany()
-
-        res.status(200).json({ message: "Todos os usuários deletados com sucesso." })
-    } catch (error) {
-        return next(error);
-    }
-}
-
 export const deleteUserByid: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const { id_usuario } = userIdParamsSchema.parse(req.params)
+        const { id_user } = userIdParamsSchema.parse(req.params)
 
-        const deleteUser = await prisma.usuarios.delete({
-            where: { id_usuario },
+        const deleteUser = await prisma.user.delete({
+            where: { id_user },
         })
         res.status(200).json({ message: "User deleted successfully", deleteUser })
     } catch (error) {
@@ -67,23 +56,23 @@ export const deleteUserByid: RequestHandler = async (req: Request, res: Response
 
 export const updateUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id_usuario } = userIdParamsSchema.parse(req.params)
-        const { cpf, nome, senha, email } = updateUserSchema.parse(req.body)
+        const { id_user } = userIdParamsSchema.parse(req.params)
+        const { cpf, name, password, email } = updateUserSchema.parse(req.body)
 
-        const existingUser = await prisma.usuarios.findUnique({
-            where: { id_usuario }
+        const existingUser = await prisma.user.findUnique({
+            where: { id_user }
         });
 
         if (!existingUser) {
             throw new AppError("User not found", 404);
         }
-        const fieldsToUpdate = { cpf, nome, senha, email };
+        const fieldsToUpdate = { cpf, name, password, email };
 
         const dataToUpdate = Object.fromEntries(
         Object.entries(fieldsToUpdate).filter(([_, v]) => v !== undefined)
         );
-        const updateuser = await prisma.usuarios.update({
-            where: { id_usuario }, data: dataToUpdate
+        const updateuser = await prisma.user.update({
+            where: { id_user }, data: dataToUpdate
         })
         res.status(201).json({message:"User updated", updateuser})
     } catch (error) {

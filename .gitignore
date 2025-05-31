@@ -1,3 +1,15 @@
-node_modules
-# Keep environment variables out of version control
+# Node
+node_modules/
+dist/
+
+# Logs
+logs
+*.log
+
+# Environment
 .env
+
+# Others
+.DS_Store
+.idea
+.vscode

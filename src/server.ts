@@ -1,6 +1,6 @@
 import express from 'express'
 import 'dotenv/config'
-import { router } from './router';
+import { router } from './routes/router';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app = express()

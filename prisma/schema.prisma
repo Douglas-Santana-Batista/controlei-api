@@ -21,97 +21,97 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum TipoPagamento {
+enum paymentType {
   CREDITO
   DEBITO
   BOLETO
   PIX
 }
 
-model Usuarios {
-  id_usuario    Int             @id @default(autoincrement())
+model User {
+  id_user       Int             @id @default(autoincrement()) @map("id_user")
   cpf           String?         @unique
-  nome          String?
-  senha         String?
+  name          String?
+  password      String?
   email         String?         @unique
-  categorias    Categorias[]
-  despesas      Despesas[]
-  receitas      Receitas[]
-  parcelas      Parcelas[]
-  Subcategorias Subcategorias[]
+  categories    Categories[]
+  expenses      Expenses[]
+  revenues      Revenues[]
+  installments  Installments[]
+  Subcategories Subcategories[]
 
-  @@map("usuarios")
+  @@map("user")
 }
 
-model Categorias {
-  id_categoria        Int             @id @default(autoincrement())
-  descricao_categoria String
-  id_usuario          Int
-  usuario             Usuarios        @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
-  despesas            Despesas[]
-  receitas            Receitas[]
-  Subcategorias       Subcategorias[]
+model Categories {
+  id_category          Int             @id @default(autoincrement())
+  category_description String
+  id_user              Int
+  user                 User            @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  expenses             Expenses[]
+  revenues             Revenues[]
+  Subcategories        Subcategories[]
 
-  @@map("categorias")
+  @@map("categories")
 }
 
-model Subcategorias {
-  id_subcategoria        Int        @id @default(autoincrement())
-  descricao_subcategoria String
-  id_categoria           Int
-  id_usuario             Int
-  categoria              Categorias @relation(fields: [id_categoria], references: [id_categoria], onDelete: Cascade)
-  usuario                Usuarios   @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
-  despesas               Despesas[]
-  receitas               Receitas[]
+model Subcategories {
+  id_subcategories        Int        @id @default(autoincrement())
+  subcategory_description String
+  id_category             Int
+  id_user                 Int
+  categories              Categories @relation(fields: [id_category], references: [id_category], onDelete: Cascade)
+  user                    User       @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  expenses                Expenses[]
+  revenues                Revenues[]
 
-  @@map("subcategorias")
+  @@map("subcategories")
 }
 
-model Despesas {
-  id_despesa                   Int            @id @default(autoincrement())
-  data_da_despesa              DateTime       @default(dbgenerated("CURRENT_DATE"))
-  descricao_despesa            String
-  valor                        Float
-  parcela                      Int?
-  tipo_pagamento               TipoPagamento  @default(DEBITO)
-  id_usuario                   Int
-  id_categoria                 Int
-  usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
-  categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria], onDelete: Cascade)
-  parcelas                     Parcelas[]
-  Subcategorias                Subcategorias? @relation(fields: [id_subcategoria], references: [id_subcategoria])
-  id_subcategoria Int?
+model Expenses {
+  id_expense          Int            @id @default(autoincrement())
+  expense_date        DateTime       @default(dbgenerated("CURRENT_DATE"))
+  expense_description String
+  value               Float
+  Installments        Int?
+  payment_type        paymentType    @default(DEBITO)
+  id_user             Int
+  id_category         Int
+  user                User           @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  categories          Categories     @relation(fields: [id_category], references: [id_category], onDelete: Cascade)
+  installments        Installments[]
+  Subcategories       Subcategories? @relation(fields: [id_subcategories], references: [id_subcategories])
+  id_subcategories    Int?
 
-  @@map("despesas")
+  @@map("expenses")
 }
 
-model Receitas {
-  id_receita                   Int            @id @default(autoincrement())
-  data_da_receita              DateTime       @default(dbgenerated("CURRENT_DATE"))
-  descricao_receitas           String?
-  valor                        Float
-  id_usuario                   Int
-  id_categoria                 Int
-  usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
-  categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria], onDelete: Cascade)
-  parcelas                     Parcelas[]
-  Subcategorias                Subcategorias? @relation(fields: [id_subcategoria], references: [id_subcategoria])
-  id_subcategoria Int?
+model Revenues {
+  id_revenues         Int            @id @default(autoincrement())
+  revenue_date        DateTime       @default(dbgenerated("CURRENT_DATE"))
+  revenue_description String?
+  value               Float
+  id_user             Int
+  id_category         Int
+  user                User           @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  categories          Categories     @relation(fields: [id_category], references: [id_category], onDelete: Cascade)
+  installments        Installments[]
+  Subcategories       Subcategories? @relation(fields: [id_subcategories], references: [id_subcategories])
+  id_subcategories    Int?
 
-  @@map("receitas")
+  @@map("revenues")
 }
 
-model Parcelas {
-  id_parcelas       Int       @id @default(autoincrement())
-  data_da_parcela   DateTime  @default(dbgenerated("CURRENT_DATE"))
-  numero_da_parcela Int
-  id_usuario        Int
-  id_receitas       Int
-  id_despesas       Int
-  usuario           Usuarios  @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
-  receita           Receitas? @relation(fields: [id_receitas], references: [id_receita])
-  despesa           Despesas? @relation(fields: [id_despesas], references: [id_despesa])
+model Installments {
+  id_installments     Int       @id @default(autoincrement())
+  installments_date   DateTime  @default(dbgenerated("CURRENT_DATE"))
+  installments_number Int
+  id_user             Int
+  id_revenues         Int
+  id_expenses         Int
+  user                User      @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  revenues            Revenues? @relation(fields: [id_revenues], references: [id_revenues])
+  expense             Expenses? @relation(fields: [id_expenses], references: [id_expense])
 
-  @@map("parcelas")
+  @@map("installments")
 }

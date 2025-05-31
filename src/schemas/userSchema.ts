@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const UserCreateSchema = z.object({
-    nome: z.string({
+    name: z.string({
         required_error: "Name is mandatory"
     })
     .min(3,"Name must be at least 3 characters long")
@@ -11,7 +11,7 @@ export const UserCreateSchema = z.object({
         .email("invalid email")
         .transform(email => email.toLowerCase().trim()),
     
-    senha:z.string()
+    password:z.string()
         .min(8,"Password must be at least 8 characters long")
         .regex(/[A-Z]/,"Password must contain at least one capital letter")
         .regex(/[0-9]/,"Password must contain at least one number"),
@@ -20,12 +20,12 @@ export const UserCreateSchema = z.object({
         .regex(/^\d+$/,"CPF must contain only numbers")
 })
 
-export const userIdParamsSchema = z.object({id_usuario: z.coerce.number().positive()});
+export const userIdParamsSchema = z.object({id_user: z.coerce.number().positive()});
 
 export const updateUserSchema = z.object({
   cpf:z.string().length(11,"CPF must have 11 digits").regex(/^\d+$/,"CPF must contain only numbers").optional(),
-  nome:z.string().trim().optional(),
+  name:z.string().trim().optional(),
   email:z.string().email("invalid email").transform(email => email.toLowerCase().trim()).optional(),
-  senha:z.string().min(8,"Password must be at least 8 characters long").regex(/[A-Z]/,"Password must contain at least one capital letter")
+  password:z.string().min(8,"Password must be at least 8 characters long").regex(/[A-Z]/,"Password must contain at least one capital letter")
 .regex(/[0-9]/,"Password must contain at least one number").optional()
 });

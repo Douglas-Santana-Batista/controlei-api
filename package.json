@@ -14,15 +14,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Finance-Organizer/finance-organizer-api.git"
+    "url": "git+https://github.com/Douglas-Santana-Batista/controlei-api.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Finance-Organizer/finance-organizer-api/issues"
-  },
-  "homepage": "https://github.com/Finance-Organizer/finance-organizer-api#readme",
   "description": "",
   "dependencies": {
     "@prisma/client": "^6.8.2",

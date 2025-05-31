@@ -1,27 +1,27 @@
 import { z } from 'zod'
-import { TipoPagamento } from '@prisma/client'
+import { paymentType } from '@prisma/client'
 import { idSchema, stringSchema } from './shared.schema'
 
-const pagamentoSchema = z.nativeEnum(TipoPagamento)
+const pagamentoSchema = z.nativeEnum(paymentType)
 
 export const despesasBodySchema = z.object({
-    descricao_despesa: stringSchema,
-    valor: idSchema,
-    parcela:idSchema.optional(),
-    tipo_pagamento:pagamentoSchema.optional()
+    expense_description: stringSchema,
+    value: idSchema,
+    Installments:idSchema.optional(),
+    payment_type:pagamentoSchema.optional()
 })
 
 export const despesasIdSchema =z.object({
-  id_usuario:idSchema,
-  id_categoria:idSchema,
-  id_subcategoria:idSchema
+  id_user:idSchema,
+  id_category:idSchema,
+  id_subcategories:idSchema
 })
 
-export const idParamSchemaExpense = z.object({id_despesa:idSchema})
+export const idParamSchemaExpense = z.object({id_expense:idSchema})
 
 export const updateExpenseSchema = z.object({
-  descricao_despesa: z.string().optional(),
-  valor: z.number().optional(),
-  parcela: z.number().nullable().optional(),
-  tipo_pagamento: pagamentoSchema.optional(),
+  expense_description: z.string().optional(),
+  value: z.number().optional(),
+  installments: z.number().nullable().optional(),
+  payment_type: pagamentoSchema.optional(),
 });

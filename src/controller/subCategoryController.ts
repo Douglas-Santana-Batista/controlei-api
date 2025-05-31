@@ -1,22 +1,22 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
 import { subcategoryIdParamsSchema, subCategorybodySchema, subcategoryupdateParamsSchema, subcategorydeleteParamsSchema } from '../schemas/subCategorySchema'
-import prisma from '../prisma'
+import prisma from '../models/prisma'
 
 
 
 export const createsubCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { descricao_subcategoria } = subCategorybodySchema.parse(req.body)
-        const { id_usuario, id_categoria } = subcategoryIdParamsSchema.parse(req.params)
+        const { subcategory_description } = subCategorybodySchema.parse(req.body)
+        const { id_user, id_category } = subcategoryIdParamsSchema.parse(req.params)
 
-        const createsubCategory = await prisma.subcategorias.create({
+        const createsubCategory = await prisma.subcategories.create({
             data: {
-                descricao_subcategoria,
-                usuario: {
-                    connect: { id_usuario }
+                subcategory_description,
+                user: {
+                    connect: { id_user }
                 },
-                categoria: {
-                    connect: { id_categoria }
+                categories: {
+                    connect: { id_category }
                 }
             }
         })
@@ -28,7 +28,7 @@ export const createsubCategory: RequestHandler = async (req: Request, res: Respo
 
 export const getAllsubCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const allSubCategory = await prisma.subcategorias.findMany()
+        const allSubCategory = await prisma.subcategories.findMany()
 
         if (allSubCategory.length === 0) {
             const error = new Error("There are no registered subcategory")
@@ -42,15 +42,15 @@ export const getAllsubCategory: RequestHandler = async (req: Request, res: Respo
 
 export const updatesubCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id_usuario, id_subcategoria } = subcategoryupdateParamsSchema.parse(req.params)
-        const { descricao_subcategoria } =  subCategorybodySchema.parse(req.body)
+        const { id_user, id_subcategories } = subcategoryupdateParamsSchema.parse(req.params)
+        const { subcategory_description } =  subCategorybodySchema.parse(req.body)
 
-        const updatesubCategory = await prisma.subcategorias.update({
+        const updatesubCategory = await prisma.subcategories.update({
             where: {
-                id_usuario,
-                id_subcategoria
+                id_user,
+                id_subcategories
             },
-            data:{ descricao_subcategoria }
+            data:{ subcategory_description }
         })
         res.status(201).json({message: "Subcategory updated successfully", updatesubCategory})
 
@@ -61,10 +61,10 @@ export const updatesubCategory: RequestHandler = async (req: Request, res: Respo
 
 export const deletesubCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id_subcategoria} = subcategorydeleteParamsSchema.parse(req.params)
+        const { id_subcategories} = subcategorydeleteParamsSchema.parse(req.params)
 
-        const deletesubCategory = await prisma.subcategorias.delete({
-            where: { id_subcategoria }
+        const deletesubCategory = await prisma.subcategories.delete({
+            where: { id_subcategories }
         })
         res.status(201).json({ message: "Subcategory deleted successfully ", deletesubCategory })
     } catch (error) {

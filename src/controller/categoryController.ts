@@ -1,19 +1,19 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
-import prisma from '../prisma'
+import prisma from '../models/prisma'
 import {validationcategorybodySchema, validationIdcategoryParamsSchema } from '../schemas/categorySchema'
 
 export const createCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const { descricao_categoria } = validationcategorybodySchema.parse(req.body)
-        const { id_usuario } = validationIdcategoryParamsSchema.parse(req.params)
+        const { category_description } = validationcategorybodySchema.parse(req.body)
+        const { id_user } = validationIdcategoryParamsSchema.parse(req.params)
 
-        const newCategory = await prisma.categorias.create({
+        const newCategory = await prisma.categories.create({
             data: {
-                descricao_categoria,
-                usuario: {
+                category_description,
+                user: {
                     connect: {
-                        id_usuario
+                        id_user
                     }
                 }
             }
@@ -29,15 +29,15 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
 export const updateCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const { id_usuario, id_categoria } = validationIdcategoryParamsSchema.parse(req.params);
-        const { descricao_categoria } = validationcategorybodySchema.parse(req.body)
+        const { id_user, id_category } = validationIdcategoryParamsSchema.parse(req.params);
+        const { category_description } = validationcategorybodySchema.parse(req.body)
 
-        const newName = await prisma.categorias.update({
+        const newName = await prisma.categories.update({
             where: {
-                id_usuario,
-                id_categoria
+                id_user,
+                id_category
             },
-            data: { descricao_categoria }
+            data: { category_description }
         })
         res.status(200).json({ message: "Category audated successfully", newName })
         return;
@@ -49,7 +49,7 @@ export const updateCategory: RequestHandler = async (req: Request, res: Response
 export const getAllCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const allCategory = await prisma.categorias.findMany()
+        const allCategory = await prisma.categories.findMany()
 
         if (allCategory.length === 0) {
             const error = new Error("There are no registered category")
@@ -65,10 +65,10 @@ export const getAllCategory: RequestHandler = async (req: Request, res: Response
 export const deleteCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const { id_categoria } = validationIdcategoryParamsSchema.parse(req.params)
+        const { id_category } = validationIdcategoryParamsSchema.parse(req.params)
 
-        const deleteCategory = await prisma.categorias.delete({
-            where: { id_categoria }
+        const deleteCategory = await prisma.categories.delete({
+            where: { id_category }
         })
 
         res.status(200).json({ message: "category deleted successfully", deleteCategory })

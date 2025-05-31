@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { createUser, deleteUserByid, getallUser, deleteAllUsers, updateUser } from "./controller/userController";
-import { createCategory, deleteCategory, getAllCategory, updateCategory } from "./controller/categoriaController";
-import { createsubCategory, deletesubCategory, getAllsubCategory, updatesubCategory } from "./controller/subCategoryController";
-import { createExpense, DeleteExpense, getAllExpense, updateExpense } from "./controller/despesasController";
+import { createUser, deleteUserByid, getallUser, deleteAllUsers, updateUser } from "../controller/userController";
+import { createCategory, deleteCategory, getAllCategory, updateCategory } from "../controller/categoryController";
+import { createsubCategory, deletesubCategory, getAllsubCategory, updatesubCategory } from "../controller/subCategoryController";
+import { createExpense, DeleteExpense, getAllExpense, updateExpense } from "../controller/despesasController";
 
 
 export const router = Router();
