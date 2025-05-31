@@ -80,8 +80,8 @@ model Despesas {
   usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria], onDelete: Cascade)
   parcelas                     Parcelas[]
-  Subcategorias                Subcategorias? @relation(fields: [subcategoriasId_subcategoria], references: [id_subcategoria])
-  subcategoriasId_subcategoria Int?
+  Subcategorias                Subcategorias? @relation(fields: [id_subcategoria], references: [id_subcategoria])
+  id_subcategoria Int?
 
   @@map("despesas")
 }
@@ -96,8 +96,8 @@ model Receitas {
   usuario                      Usuarios       @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   categoria                    Categorias     @relation(fields: [id_categoria], references: [id_categoria], onDelete: Cascade)
   parcelas                     Parcelas[]
-  Subcategorias                Subcategorias? @relation(fields: [subcategoriasId_subcategoria], references: [id_subcategoria])
-  subcategoriasId_subcategoria Int?
+  Subcategorias                Subcategorias? @relation(fields: [id_subcategoria], references: [id_subcategoria])
+  id_subcategoria Int?
 
   @@map("receitas")
 }

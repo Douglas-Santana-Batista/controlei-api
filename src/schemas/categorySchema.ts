@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { idSchema } from './shared.schema'
 
 const categoriaBodySchema =z.object({
     descricao_categoria:z.string({
@@ -9,21 +10,9 @@ const categoriaBodySchema =z.object({
     .toLowerCase()
 })
 
-export const categoryCreatSchema = categoriaBodySchema
+export const validationcategorybodySchema = categoriaBodySchema
 
-export const categoryUpdateSchema = categoriaBodySchema
-
-const categoryIdSchema = z.coerce.number().positive()
-
-export const categoryIduserParamsSchema = z.object({
-    id_usuario: categoryIdSchema
-})
-
-export const categoryIdcategoryParamsSchema = z.object({
-    id_categoria: categoryIdSchema
-})
-
-export const categoryidUpdate = z.object({
-    id_categoria: categoryIdSchema,
-    id_usuario: categoryIdSchema
+export const validationIdcategoryParamsSchema = z.object({
+    id_categoria:idSchema,
+    id_usuario:idSchema
 })

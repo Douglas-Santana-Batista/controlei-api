@@ -20,6 +20,12 @@ export const UserCreateSchema = z.object({
         .regex(/^\d+$/,"CPF must contain only numbers")
 })
 
-export const userIdParamsSchema = z.object({
-    id_usuario: z.string().regex(/^\d+$/, "ID must be a number")
+export const userIdParamsSchema = z.object({id_usuario: z.coerce.number().positive()});
+
+export const updateUserSchema = z.object({
+  cpf:z.string().length(11,"CPF must have 11 digits").regex(/^\d+$/,"CPF must contain only numbers").optional(),
+  nome:z.string().trim().optional(),
+  email:z.string().email("invalid email").transform(email => email.toLowerCase().trim()).optional(),
+  senha:z.string().min(8,"Password must be at least 8 characters long").regex(/[A-Z]/,"Password must contain at least one capital letter")
+.regex(/[0-9]/,"Password must contain at least one number").optional()
 });

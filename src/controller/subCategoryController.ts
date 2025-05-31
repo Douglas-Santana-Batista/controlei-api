@@ -1,5 +1,5 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
-import { subcategoryIdParamsSchema, subCategorybodySchema, subcategoryupdateParamsSchema } from '../schemas/subCategorySchema'
+import { subcategoryIdParamsSchema, subCategorybodySchema, subcategoryupdateParamsSchema, subcategorydeleteParamsSchema } from '../schemas/subCategorySchema'
 import prisma from '../prisma'
 
 
@@ -20,8 +20,7 @@ export const createsubCategory: RequestHandler = async (req: Request, res: Respo
                 }
             }
         })
-
-        res.status(201).json(createsubCategory)
+        res.status(201).json({message:"Created", createsubCategory})
     } catch (error) {
         next(error)
     }
@@ -35,7 +34,6 @@ export const getAllsubCategory: RequestHandler = async (req: Request, res: Respo
             const error = new Error("There are no registered subcategory")
             return next(error);
         }
-
         res.status(201).json(allSubCategory)
     } catch (error) {
         next(error)
@@ -54,7 +52,6 @@ export const updatesubCategory: RequestHandler = async (req: Request, res: Respo
             },
             data:{ descricao_subcategoria }
         })
-
         res.status(201).json({message: "Subcategory updated successfully", updatesubCategory})
 
     } catch (error) {
@@ -64,13 +61,12 @@ export const updatesubCategory: RequestHandler = async (req: Request, res: Respo
 
 export const deletesubCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id_usuario, id_subcategoria} = subcategoryupdateParamsSchema.parse(req.params)
+        const { id_subcategoria} = subcategorydeleteParamsSchema.parse(req.params)
 
         const deletesubCategory = await prisma.subcategorias.delete({
-            where: { id_subcategoria, id_usuario }
+            where: { id_subcategoria }
         })
-
-        res.status(201).json({ message: " Subcategory deleted successfully ", deletesubCategory })
+        res.status(201).json({ message: "Subcategory deleted successfully ", deletesubCategory })
     } catch (error) {
         next(error)
     }
