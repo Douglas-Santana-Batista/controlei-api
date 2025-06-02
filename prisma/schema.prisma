@@ -107,8 +107,8 @@ model Installments {
   installments_date   DateTime  @default(dbgenerated("CURRENT_DATE"))
   installments_number Int
   id_user             Int
-  id_revenues         Int
-  id_expenses         Int
+  id_revenues         Int?
+  id_expenses         Int?
   user                User      @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
   revenues            Revenues? @relation(fields: [id_revenues], references: [id_revenues])
   expense             Expenses? @relation(fields: [id_expenses], references: [id_expense])

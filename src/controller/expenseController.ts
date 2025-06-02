@@ -1,6 +1,6 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
 import prisma from '../models/prisma'
-import { despesasBodySchema, despesasIdSchema, idParamSchemaExpense, updateExpenseSchema } from '../schemas/despesasSchema'
+import { despesasBodySchema, despesasIdSchema, idParamSchemaExpense, updateExpenseSchema } from '../schemas/expenseSchema'
 import { AppError } from '../utils/AppError'
 
 export const createExpense: RequestHandler = async  (req:Request, res:Response, next: NextFunction) =>{

@@ -1,6 +1,6 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
 import prisma from '../models/prisma'
-import {validationcategorybodySchema, validationIdcategoryParamsSchema } from '../schemas/categorySchema'
+import {validationcategorybodySchema, validationIdcategoryParamsSchema, validationIdDeletecategoryParamsSchema, validationIdupdatecategoryParamsSchema } from '../schemas/categorySchema'
 
 export const createCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -11,11 +11,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
         const newCategory = await prisma.categories.create({
             data: {
                 category_description,
-                user: {
-                    connect: {
-                        id_user
-                    }
-                }
+                id_user
             }
         })
         res.status(201).json({ message: "Category created successfully", newCategory })
@@ -29,7 +25,7 @@ export const createCategory: RequestHandler = async (req: Request, res: Response
 export const updateCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const { id_user, id_category } = validationIdcategoryParamsSchema.parse(req.params);
+        const { id_user, id_category } = validationIdupdatecategoryParamsSchema.parse(req.params);
         const { category_description } = validationcategorybodySchema.parse(req.body)
 
         const newName = await prisma.categories.update({
@@ -65,7 +61,7 @@ export const getAllCategory: RequestHandler = async (req: Request, res: Response
 export const deleteCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const { id_category } = validationIdcategoryParamsSchema.parse(req.params)
+        const { id_category } = validationIdDeletecategoryParamsSchema.parse(req.params)
 
         const deleteCategory = await prisma.categories.delete({
             where: { id_category }

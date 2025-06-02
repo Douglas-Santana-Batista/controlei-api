@@ -12,7 +12,15 @@ const categoriaBodySchema =z.object({
 
 export const validationcategorybodySchema = categoriaBodySchema
 
+export const validationIdupdatecategoryParamsSchema = z.object({
+    id_user:idSchema,
+    id_category:idSchema
+})
+
+export const validationIdDeletecategoryParamsSchema = z.object({
+    id_category: idSchema
+})
+
 export const validationIdcategoryParamsSchema = z.object({
-    id_category:idSchema,
     id_user:idSchema
 })
