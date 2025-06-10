@@ -1,30 +1,42 @@
 # Controlei API 🚀
 
-API para organização de finanças pessoais. Gerencie entradas, saídas, saldo e categorias de gastos.
+API para organização de finanças pessoais com controle completo de receitas, despesas e parcelamentos. Gerencie entradas, saídas, saldo e categorias de gastos com precisão.
 
-## 🛠️ Tecnologias usadas
-- Node.js
-- Express
-- Prisma ORM
-- PostgreSQL (ou outro banco)
-- JWT (para autenticação)
-- Docker (se desejar)
+## 🛠️ Tecnologias Principais
+- **Runtime**: Node.js v18+
+- **Framework**: Express
+- **ORM**: Prisma
+- **Banco de Dados**: PostgreSQL
+- **Autenticação**: JWT
+- **Validação**: Zod
+- **Containerização**: Docker
+- **Testes**: Jest (em implementação)
 
-## 🚀 Funcionalidades
-- Cadastro e login de usuários (Em desenvolvimento)
-- Cadastrar entradas e saídas (transações)
-- Categorizar transações (ex.: Alimentação, Transporte)
-- Ver saldo total
-- Ver relatório de gastos por categoria
-- CRUD completo de transações
+## 📦 Como Executar Localmente
 
-## 🔥 Diferenciais futuros
-- Geração de PDF de relatórios
-- Dashboard com gráficos
-- Deploy na nuvem (Railway, Vercel ou Render)
+### Pré-requisitos
+- Node.js v18+
+- PostgreSQL 14+ (ou Docker)
+- npm ou yarn
 
-## 📦 Como rodar o projeto localmente
+### Passo a Passo
 ```bash
+# 1. Clonar o repositório
 git clone git@github.com:Douglas-Santana-Batista/controlei-api.git
 cd controlei-api
+
+# 2. Instalar dependências
 npm install
+
+# 3. Configurar ambiente
+cp .env.example .env
+# Edite o .env com suas credenciais
+
+# 4. Iniciar banco de dados com Docker
+docker-compose up -d
+
+# 5. Executar migrações
+npx prisma migrate dev
+
+# 6. Iniciar a aplicação
+npm run dev

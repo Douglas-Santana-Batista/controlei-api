@@ -7,6 +7,6 @@ services:
     environment:
       POSTGRES_USER: douglas       # Seu usuário
       POSTGRES_PASSWORD: Dougras1  # Sua senha
-      POSTGRES_DB: finance-organizer  # Nome do banco
+      POSTGRES_DB: controlei  # Nome do banco
     ports:
       - "5432:5432"  # Porta padrão do PostgreSQL

@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { idSchema } from './shared.schema'
 
 const categoriaBodySchema =z.object({
-    category_description:z.string({
+    description:z.string({
         required_error: "description is mandatory"
     })
     .min(3,"Name must be at least 3 characters long")

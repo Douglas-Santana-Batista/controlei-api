@@ -10,7 +10,7 @@ export const createUser: RequestHandler = async (req: Request, res: Response, ne
         const { cpf, name, password, email } = UserCreateSchema.parse(req.body)
         const hashPassword = await bcrypt.hash(password, 10)
 
-        const novoUsuario = await prisma.user.create({
+        const newUsuario = await prisma.user.create({
             data: { name, email, password: hashPassword, cpf },
             select: {
                 id_user: true,
@@ -18,7 +18,7 @@ export const createUser: RequestHandler = async (req: Request, res: Response, ne
                 email: true
             }
         });
-        res.status(201).json(novoUsuario);
+        res.status(201).json(newUsuario);
     } catch (error) {
         next(error);
     }
@@ -27,12 +27,12 @@ export const createUser: RequestHandler = async (req: Request, res: Response, ne
 export const getallUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const mostrartodosUsuarios = await prisma.user.findMany()
+        const getAllUsers = await prisma.user.findMany()
 
-        if (mostrartodosUsuarios.length === 0) {
+        if (getAllUsers.length === 0) {
             throw new AppError("There are no registered users", 404)
         }
-        res.json(mostrartodosUsuarios);
+        res.json(getAllUsers);
         return;
     } catch (error) {
         return next(error);
@@ -71,10 +71,15 @@ export const updateUser: RequestHandler = async (req: Request, res: Response, ne
         const dataToUpdate = Object.fromEntries(
         Object.entries(fieldsToUpdate).filter(([_, v]) => v !== undefined)
         );
+
+        if (password) { const hashPassword = await bcrypt.hash(password, 10); 
+            dataToUpdate.password = hashPassword; 
+        }
+
         const updateuser = await prisma.user.update({
             where: { id_user }, data: dataToUpdate
         })
-        res.status(201).json({message:"User updated", updateuser})
+        res.status(200).json({message:"User updated", updateuser})
     } catch (error) {
         next(error)
     }

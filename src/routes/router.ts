@@ -2,16 +2,14 @@ import { Router } from "express";
 import { createUser, deleteUserByid, getallUser, updateUser } from "../controller/userController";
 import { createCategory, deleteCategory, getAllCategory, updateCategory } from "../controller/categoryController";
 import { createsubCategory, deletesubCategory, getAllsubCategory, updatesubCategory } from "../controller/subCategoryController";
-import { createExpense, DeleteExpense, getAllExpense, updateExpense } from "../controller/expenseController";
-import { createRevenue } from "../controller/revenuesController";
-
+import { createInstallments, updateInstallments } from "../controller/installmentsController";
 
 export const router = Router();
 
 //users routes
-router.post("/user", createUser)
-router.get("/get", getallUser)
-router.delete("/delete/:id_user", deleteUserByid)
+router.post("/users", createUser)
+router.get("/getUsers", getallUser)
+router.delete("/deleteUser/:id_user", deleteUserByid)
 router.put("/updateUser/:id_user", updateUser)
 
 //category routes
@@ -24,13 +22,8 @@ router.delete("/deleteCategory/:id_category",deleteCategory)
 router.post("/createSubCategory/:id_user/:id_category", createsubCategory)
 router.get("/getAllsubCategory", getAllsubCategory)
 router.delete("/deletesubCategory/:id_subcategories", deletesubCategory)
-router.put("/updatesubCategory/:id_usuario/:id_subcategories", updatesubCategory)
+router.put("/updatesubCategory/:id_user/:id_subcategory", updatesubCategory)
 
-//expense routers
-router.post("/createExpense/:id_user/:id_category/:id_subcategories", createExpense)
-router.get("/getAllExpense", getAllExpense)
-router.delete("/DeleteExpense/:id_expense", DeleteExpense)
-router.put("/updateExpense/:id_expense", updateExpense)
-
-//revenues router
-router.post("/createRevenue/:id_user/:id_category/:id_subcategories", createRevenue)
+//installments routes
+router.post("/createInstallments/:id_user", createInstallments)
+router.put("/updateInstallments/:id_user/:id_installment", updateInstallments)
