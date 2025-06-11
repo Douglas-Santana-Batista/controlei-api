@@ -10,17 +10,17 @@ const categoriaBodySchema =z.object({
     .toLowerCase()
 })
 
-export const validationcategorybodySchema = categoriaBodySchema
+export const categorybodySchema = categoriaBodySchema
 
-export const validationIdupdatecategoryParamsSchema = z.object({
+export const IdupdatecategoryParamsSchema = z.object({
     id_user:idSchema,
     id_category:idSchema
 })
 
-export const validationIdDeletecategoryParamsSchema = z.object({
+export const IdDeletecategoryParamsSchema = z.object({
     id_category: idSchema
 })
 
-export const validationIdcategoryParamsSchema = z.object({
+export const IdcategoryParamsSchema = z.object({
     id_user:idSchema
 })

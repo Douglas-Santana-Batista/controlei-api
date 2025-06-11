@@ -16,10 +16,21 @@ export const installmentsUpdateBody = z.object({
 })
 
 export const installmentsCreateParams = z.object({
-    id_user:idSchema
+    id_user:idSchema,
+    id_subcategory:idSchema
 })
 
 export const updateInstallmentParams = z.object({
+    id_user:idSchema,
+    id_installment:idSchema
+})
+
+export const deleteInstallmentParams = z.object({
+    id_user:idSchema,
+    id_installment:idSchema
+})
+
+export const getinstallmentsSchema = z.object({
     id_user:idSchema,
     id_installment:idSchema
 })

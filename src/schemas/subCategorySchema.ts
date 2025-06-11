@@ -3,12 +3,19 @@ import { idSchema, stringSchema, MonetaryValueSchema, dateSchema } from './share
 
 export const subcategoryupdateParamsSchema = z.object({
     id_subcategory:idSchema,
-    id_user:idSchema
+    id_user:idSchema,
+    id_category:idSchema
 })
 
 export const subcategoryIdParamsSchema = z.object({
     id_user: idSchema,
     id_category: idSchema
+})
+
+export const subcategoryGetSchema = z.object({
+    id_user:idSchema,
+    id_category:idSchema,
+    id_subcategory:idSchema
 })
 
 export const subCategorybodySchema = z.object({
@@ -27,5 +34,12 @@ export const updateSubCategorybodySchema = z.object({
 })
 
 export const subcategorydeleteParamsSchema = z.object({
-    id_subcategory:idSchema
+    id_subcategory:idSchema,
+    id_user:idSchema,
+    id_category:idSchema
+})
+
+export const subcategorygetuser = z.object({
+    id_user:idSchema,
+    id_category:idSchema
 })

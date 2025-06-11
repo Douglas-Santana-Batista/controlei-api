@@ -24,15 +24,19 @@ export const createUser: RequestHandler = async (req: Request, res: Response, ne
     }
 }
 
-export const getallUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
+export const getUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
-        const getAllUsers = await prisma.user.findMany()
+        const { id_user } = userIdParamsSchema.parse(req.params)
 
-        if (getAllUsers.length === 0) {
+        const getUsers = await prisma.user.findMany({
+            where:{ id_user }
+        })
+
+        if (getUsers.length === 0) {
             throw new AppError("There are no registered users", 404)
         }
-        res.json(getAllUsers);
+        res.json(getUsers);
         return;
     } catch (error) {
         return next(error);
