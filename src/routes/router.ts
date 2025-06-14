@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser, deleteUserByid, getUser, updateUser } from "../controller/userController";
+import { createUser, deleteUserByid, getAllUser, getUser, login, updateUser } from "../controller/userController";
 import { createCategory, deleteCategory, getAllCategory, getCategory, updateCategory } from "../controller/categoryController";
 import { createsubCategory, deletesubCategory, getAllsubCategory, getSubcategory, updatesubCategory } from "../controller/subCategoryController";
 import { createInstallments, deleteInstallment, getallInstallment, getinstallment, updateInstallments } from "../controller/installmentsController";
@@ -32,3 +32,10 @@ router.put("/updateInstallments/:id_user/:id_installment", updateInstallments)
 router.delete("/deleteInstallment/:id_user/:id_installment", deleteInstallment)
 router.get("/getallInstallment/:id_user/:id_subcategory", getallInstallment)
 router.get("/getinstallment/:id_user/:id_instalment", getinstallment)
+
+//login and register routes
+router.get("/login", login)
+
+
+//teste
+router.get("/getAllUser", getAllUser)

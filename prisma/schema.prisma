@@ -27,10 +27,10 @@ enum InstallmentStatus {
 
 model User {
   id_user     Int           @id @default(autoincrement())
-  cpf         String?       @unique
-  name        String?
-  password    String?
-  email       String?       @unique
+  cpf         String        @unique
+  name        String
+  password    String
+  email       String        @unique
   categories  Category[]
   subcategory Subcategory[]
   Installment Installment[]
@@ -59,7 +59,6 @@ model Subcategory {
   category       Category       @relation(fields: [id_category], references: [id_category], onDelete: Cascade)
   user           User           @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
   installment    Installment[]  @relation("SubcategoryInstallments")
-  
 
   @@index([id_user], name: "idx_expense_user")
   @@index([date], name: "idx_expense_date")
@@ -77,7 +76,6 @@ model Installment {
   id_user        Int
   user           User              @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
   subcategory    Subcategory       @relation("SubcategoryInstallments", fields: [id_subcategory], references: [id_subcategory], onDelete: Cascade)
-  
 
   @@index([id_user], name: "idx_installment_user")
   @@index([due_date], name: "idx_installment_due_date")
