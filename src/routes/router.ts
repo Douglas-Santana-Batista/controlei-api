@@ -8,7 +8,7 @@ export const router = Router();
 
 //users routes
 router.post("/users", createUser)
-router.get("/getUsers/:id_user", getUser)
+router.get("/getUsers/:id_user",getUser)
 router.delete("/deleteUser/:id_user", deleteUserByid)
 router.put("/updateUser/:id_user", updateUser)
 

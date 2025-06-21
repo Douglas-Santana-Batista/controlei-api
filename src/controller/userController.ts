@@ -1,10 +1,10 @@
 import { Request, Response, RequestHandler, NextFunction } from 'express'
 import prisma from '../models/prisma'
-import bcrypt, { compare } from 'bcrypt';
 import { loginSchema, updateUserSchema, UserCreateSchema, userIdParamsSchema } from '../schemas/userSchema';
 import { AppError } from '../utils/AppError';
-import { comparePasswords, createtoken } from '../utils/authUtils';
-import { string } from 'zod';
+import { comparePasswords, createToken } from '../middlewares/authMiddleware';
+import bcrypt from 'bcrypt';
+
 
 export const createUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -91,25 +91,28 @@ export const updateUser: RequestHandler = async (req: Request, res: Response, ne
     }
 }
 
-export const login = async (req: Request, res: Response, next: NextFunction) => {
+export const login:RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = loginSchema.parse(req.body)
 
     try {
         const userLogin = await prisma.user.findUnique({where:{email}})
 
         if(!userLogin || !userLogin.password){
-            return res.status(401).json({ erro: 'Invalid credentials' })
+            throw new AppError("user does not exist", 400)
         }
 
         const validationPassword = await comparePasswords(password, userLogin.password)
 
         if(!validationPassword){
-            return res.status(401).json({ erro: 'Invalid credentials' });
+            throw new AppError("invalid crededntials", 400)
         }
 
-        const token = createtoken(userLogin.id_user)
+        const token = createToken(userLogin.id_user)
 
-        res.json({token})
+        const { password:_,cpf, ...safeUser } = userLogin;
+
+
+        res.status(200).json({token, safeUser})
 
     } catch (error) {
         next(error)
@@ -125,3 +128,11 @@ export const getAllUser:RequestHandler = async (req: Request, res: Response, nex
         next(error)
     }
 }
+
+function omitir(userLogin: { email: string; password: string; id_user: number; cpf: string; name: string; }, arg1: string) {
+    throw new Error('Function not implemented.');
+}
+function omit(userLogin: { id_user: number; name: string; email: string; password: string; cpf: string; }, arg1: string) {
+    throw new Error('Function not implemented.');
+}
+
