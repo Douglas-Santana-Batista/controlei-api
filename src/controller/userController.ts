@@ -2,7 +2,7 @@ import { Request, Response, RequestHandler, NextFunction } from 'express'
 import prisma from '../models/prisma'
 import { loginSchema, updateUserSchema, UserCreateSchema, userIdParamsSchema } from '../schemas/userSchema';
 import { AppError } from '../utils/AppError';
-import { comparePasswords, createToken } from '../middlewares/authMiddleware';
+import { comparePasswords, createToken } from '../utils/authUtils';
 import bcrypt from 'bcrypt';
 
 
@@ -97,7 +97,7 @@ export const login:RequestHandler = async (req: Request, res: Response, next: Ne
     try {
         const userLogin = await prisma.user.findUnique({where:{email}})
 
-        if(!userLogin || !userLogin.password){
+        if(!userLogin){
             throw new AppError("user does not exist", 400)
         }
 
@@ -122,17 +122,8 @@ export const login:RequestHandler = async (req: Request, res: Response, next: Ne
 export const getAllUser:RequestHandler = async (req: Request, res: Response, next: NextFunction) =>{
     try {
         const alluser = await prisma.user.findMany()
-
         res.status(200).json(alluser)
     } catch (error) {
         next(error)
     }
 }
-
-function omitir(userLogin: { email: string; password: string; id_user: number; cpf: string; name: string; }, arg1: string) {
-    throw new Error('Function not implemented.');
-}
-function omit(userLogin: { id_user: number; name: string; email: string; password: string; cpf: string; }, arg1: string) {
-    throw new Error('Function not implemented.');
-}
-
