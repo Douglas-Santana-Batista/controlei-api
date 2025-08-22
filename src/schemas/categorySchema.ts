@@ -1,26 +1,27 @@
-import { z } from 'zod'
-import { idSchema } from './shared.schema'
+import { z } from "zod";
+import { idSchema, MonetaryValueSchema } from "./shared.schema";
 
-const categoriaBodySchema =z.object({
-    description:z.string({
-        required_error: "description is mandatory"
+const categoriaBodySchema = z.object({
+  description: z
+    .string({
+      required_error: "description is mandatory",
     })
-    .min(3,"Name must be at least 3 characters long")
     .trim()
-    .toLowerCase()
-})
+    .toLowerCase(),
+  budget: MonetaryValueSchema.optional(),
+});
 
-export const categorybodySchema = categoriaBodySchema
+export const categorybodySchema = categoriaBodySchema;
 
 export const IdupdatecategoryParamsSchema = z.object({
-    id_user:idSchema,
-    id_category:idSchema
-})
+  id_user: idSchema,
+  id_category: idSchema,
+});
 
 export const IdDeletecategoryParamsSchema = z.object({
-    id_category: idSchema
-})
+  id_category: idSchema,
+});
 
 export const IdcategoryParamsSchema = z.object({
-    id_user:idSchema
-})
+  id_user: idSchema,
+});

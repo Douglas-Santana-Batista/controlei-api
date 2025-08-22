@@ -10,20 +10,16 @@ declare module "express-serve-static-core" {
   }
 }
 
-
-export const authMiddleware:RequestHandler = async (req, res, next) =>{
-    try {
-        const autorization = req.headers.authorization?.split(' ')[1]
-
-        if(!autorization){
-            throw new AppError("invalid token")
-        }
-        const decoded = verifyToken(autorization) as {id_user: number}
-
-        req.user = {id_user: decoded.id_user}
-
-        next()
-    } catch (error) {
-        next(error)
+export const authMiddleware: RequestHandler = async (req, res, next) => {
+  try {
+    const autorization = req.headers.authorization?.split(" ")[1];
+    if (!autorization) {
+      throw new AppError("invalid token");
     }
-}
+    const decoded = verifyToken(autorization) as { id_user: number };
+    req.user = { id_user: decoded.id_user };
+    next();
+  } catch (error) {
+    next(error);
+  }
+};

@@ -7,9 +7,7 @@ export const createToken = (id_user: number) => {
   return jwt.sign(
     { id_user },
     JWT_SECRET,
-    { expiresIn: '1d',
-      algorithm: "HS256"
-     }
+    {expiresIn: '1d', algorithm: "HS256"}
   );
 };
 

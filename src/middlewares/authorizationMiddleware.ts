@@ -9,23 +9,22 @@ declare module "express-serve-static-core" {
   }
 }
 
-
-export const authorizeUser:RequestHandler = (req, res, next) => {
+export const authorizeUser: RequestHandler = (req, res, next) => {
   try {
-
     if (!req.user) {
       throw new AppError("Authentication required", 401);
     }
-
     const authenticatedUserId = Number(req.user.id_user);
     const targetUserId = Number(req.params.id_user);
 
     if (authenticatedUserId !== targetUserId) {
-      throw new AppError("Access denied: You can only modify your own data",403)
+      throw new AppError(
+        "Access denied: You can only modify your own data",
+        403
+      );
     }
-
-    next()
+    next();
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
