@@ -132,7 +132,8 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "description": { "type": "string" }
+                  "description": { "type": "string" },
+                  "budjet": { "type": "number" }
                 },
                 "required": ["name"]
               }

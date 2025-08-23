@@ -6,7 +6,7 @@ import SwaggerUi from "swagger-ui-express";
 import swaggerDoc from "./swagger.json";
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
 
@@ -18,6 +18,6 @@ app.use(router);
 
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log("server running");
+app.listen(port, "0.0.0.0", () => {
+  console.log(`server running on port ${port}`);
 });
