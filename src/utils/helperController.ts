@@ -1,6 +1,5 @@
 import { Prisma } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
-import { AppError } from "./AppError";
 
 // Função para adicionar meses a uma data de forma segura
 export function addMonths(date: Date, months: number): Date {
@@ -43,7 +42,7 @@ export function prepareData(data: InstallmentData) {
     const isLast = i === data.number - 1;
     const parcelValue = isLast ? lastInstallmentAdjustment : installmentValue;
     return {
-      due_date: addMonths(new Date(), i),
+      createdAt: addMonths(new Date(), i),
       amount: parcelValue,
       number: i + 1,
       status: data.status,
