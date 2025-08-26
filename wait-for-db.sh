@@ -16,5 +16,8 @@ while ! nc -z $host $port; do
   echo "Aguardando PostgreSQL..."
 done
 
+# Aplica todas as migrations existentes
+npx prisma migrate deploy
+
 echo "PostgreSQL está disponível - executando comando: $cmd"
 exec $cmd
