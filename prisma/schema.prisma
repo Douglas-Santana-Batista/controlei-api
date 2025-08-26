@@ -31,6 +31,8 @@ model User {
   name        String
   password    String
   email       String        @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   categories  Category[]
   subcategory Subcategory[]
   Installment Installment[]
@@ -43,6 +45,8 @@ model Category {
   id_category Int           @id @default(autoincrement())
   description String
   budget      Decimal?       @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   id_user     Int
   user        User          @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
   subcategory Subcategory[]
@@ -55,6 +59,8 @@ model Subcategory {
   date           DateTime       @default(now())
   payment_type   PaymentType    @default(DEBITO)
   financial_flow Financial_Flow @default(EXIT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   id_category    Int
   id_user        Int
   category       Category       @relation(fields: [id_category], references: [id_category], onDelete: Cascade)
@@ -73,6 +79,7 @@ model Installment {
   amount         Decimal           @db.Decimal(10, 2)
   status         InstallmentStatus @default(PENDING)
   number         Int
+  createdAt DateTime @default(now())
   id_subcategory Int
   id_user        Int
   user           User              @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
