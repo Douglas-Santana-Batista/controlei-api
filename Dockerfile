@@ -33,7 +33,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Instala só dependências de produção
-RUN npm install --omit=dev
+RUN npm ci --omit=dev
 
 # Copia build e Prisma Client da etapa anterior
 COPY --from=builder /app/dist ./dist
@@ -44,5 +44,6 @@ COPY wait-for-db.sh ./
 RUN chmod +x wait-for-db.sh
 
 EXPOSE 3000
+EXPOSE 5555
 
 CMD ["./wait-for-db.sh", "db", "5432", "npm", "start"]
