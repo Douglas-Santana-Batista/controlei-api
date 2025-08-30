@@ -15,4 +15,8 @@ export class Password {
     this.password = newPassword;
     return this.password;
   }
+
+  public toString(): string {
+    return this.password;
+  }
 }

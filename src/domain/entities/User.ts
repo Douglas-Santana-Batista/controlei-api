@@ -1,14 +1,13 @@
-import { date } from "zod";
 import { Cpf } from "./Cpf";
 import { Email } from "./Email";
 import { Password } from "./Password";
 
 export class User {
   public readonly id_user: number;
-  private cpf: Cpf;
+  public cpf: Cpf;
   public name: string;
   public email: Email;
-  private password: Password;
+  public password: Password;
   public createdAt: Date;
   public updatedAt: Date;
 
@@ -32,8 +31,8 @@ export class User {
     return this.email.setEmail(newEmail);
   }
 
-  public getEmail() {
-    return this.email.getEmail;
+  public getEmail(): string {
+    return this.email.get();
   }
 
   public changePassword(newPassword: string): string {
@@ -41,12 +40,16 @@ export class User {
     return this.password.setPassword(newPassword);
   }
 
+  public getPassword(): string {
+    return this.password.toString();
+  }
+
   public changeCpf(newCpf: string) {
     this.updatedAt = new Date();
     return this.cpf.set(newCpf);
   }
 
-  public getCpf() {
-    return this.cpf.getFormatted;
+  public getCpf(): string {
+    return this.cpf.getFormatted();
   }
 }

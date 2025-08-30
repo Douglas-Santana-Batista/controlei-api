@@ -6,14 +6,15 @@ export class Email {
     this.email = email;
   }
 
-  private validate(): void {
+  private validate(): string {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.email)) {
       throw new Error("Invalid email address");
     }
+    return this.email;
   }
 
-  public getEmail(): string {
+  public get(): string {
     return this.email;
   }
 
