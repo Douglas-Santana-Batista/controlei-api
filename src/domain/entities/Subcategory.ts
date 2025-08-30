@@ -1,22 +1,19 @@
 import { payment_type } from "../enums/paymentType";
+import { Amount } from "./Amount";
 
 export class Subcategory {
   public readonly id_subcategory: number;
   private _description: string;
-  private _value: number;
+  private _amount: Amount;
   private payment_type: payment_type;
 
-  constructor(id_subcategory: number, description: string, value: number, payment_type: payment_type) {
+  constructor(id_subcategory: number, description: string, _amount: Amount, payment_type: payment_type) {
     this.id_subcategory = id_subcategory;
     this._description = description;
     this.payment_type = payment_type;
-    this._value = value;
+    this._amount = _amount;
 
     this.validate();
-  }
-
-  get value(): number {
-    return this._value;
   }
 
   get description(): string {
@@ -34,10 +31,6 @@ export class Subcategory {
   private validate(): void {
     if (this._description.length <= 0) {
       throw new Error("Description must be greater than zero");
-    }
-
-    if (this._value <= 0) {
-      throw new Error("Value must be greater than zero");
     }
 
     if (!Object.values(payment_type).includes(this.payment_type)) {
@@ -62,8 +55,23 @@ export class Subcategory {
     this.validate();
   }
 
-  public changeValue(newValue: number) {
-    this._value = newValue;
-    this.validate();
+  get amount(): number {
+    return this._amount.amountValue;
+  }
+
+  get amountToString(): string {
+    return this._amount.toString;
+  }
+
+  public amountToCurrencyString(currency: string = "BRL"): string {
+    return this._amount.toCurrencyString(currency);
+  }
+
+  public amountToCents(): number {
+    return this._amount.toCents();
+  }
+
+  public toCents(): number {
+    return this._amount.toCents();
   }
 }

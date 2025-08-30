@@ -1,43 +1,49 @@
-// src/domain/entities/Category.ts
+import { Amount } from "./Amount";
+
 export class Category {
   public readonly id: string;
   public _name: string;
-  private _amount: number; // Usando number internamente
+  private _amount: Amount;
 
-  constructor(id: string, name: string, amount: number) {
+  constructor(id: string, name: string, amount: Amount) {
     this.id = id;
     this._name = name;
     this._amount = amount;
     this.validate();
   }
 
-  get name(): string {
+  public getAmount(): number {
+    return this._amount.getValue();
+  }
+
+  public setAmountToString(): void {
+    this._amount.toString();
+  }
+
+  public updateAmount(newAmount: number | string): void {
+    this._amount.setAmountValue(newAmount);
+  }
+
+  public amountToCurrencyString(currency: string = "BRL"): string {
+    return this._amount.toCurrencyString(currency);
+  }
+
+  public amountToCents(): number {
+    return this._amount.toCents();
+  }
+
+  public amountFromCents(cents: number): void {
+    this._amount = Amount.fromCents(cents);
+  }
+
+  public getName(): string {
     return this._name;
   }
 
-  get amount(): number {
-    return this._amount;
-  }
-
   private validate(): void {
-    if (this.name.length < 3) {
-      throw new Error("Name must be at least 3 characters long");
+    if (this.getName.length < 1) {
+      throw new Error("Name must be at least 0 characters long");
     }
-
-    if (this._amount <= 0) {
-      throw new Error("Amount must be greater than zero");
-    }
-
-    // Validação de casas decimais
-    const decimalPlaces = (this._amount.toString().split(".")[1] || "").length;
-    if (decimalPlaces > 2) {
-      throw new Error("Amount must have at most 2 decimal places");
-    }
-  }
-
-  public updateAmount(newAmount: number): void {
-    this._amount = newAmount;
-    this.validate();
   }
 
   public updateName(newName: string): void {

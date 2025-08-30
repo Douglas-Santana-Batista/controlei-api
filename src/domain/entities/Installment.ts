@@ -1,11 +1,13 @@
+import { Amount } from "./Amount";
+
 export class Installment {
   public readonly id_installment: number;
-  public _amount: number;
+  public _amount: Amount;
   public _status: InstallmentStatus;
   public _number: number;
   public readonly createdAt: Date;
 
-  constructor(id_installment: number, amount: number, status: InstallmentStatus, number: number, createdAt: Date) {
+  constructor(id_installment: number, amount: Amount, status: InstallmentStatus, number: number, createdAt: Date) {
     this.id_installment = id_installment;
     this._amount = amount;
     this._status = status;
@@ -16,7 +18,23 @@ export class Installment {
   }
 
   get amount(): number {
-    return this._amount;
+    return this._amount.amountValue;
+  }
+
+  get amountToString(): string {
+    return this._amount.toString;
+  }
+
+  public amountToCurrencyString(currency: string = "BRL"): string {
+    return this._amount.toCurrencyString(currency);
+  }
+
+  public amountToCents(): number {
+    return this._amount.toCents();
+  }
+
+  public toCents(): number {
+    return this._amount.toCents();
   }
 
   get number(): number {
@@ -28,10 +46,6 @@ export class Installment {
   }
 
   private validate() {
-    if (this.amount <= 0) {
-      throw new Error("Value must be greater than zero");
-    }
-
     if (this._number <= 0) {
       throw new Error("Value must be greater than zero");
     }
@@ -58,8 +72,7 @@ export class Installment {
   }
 
   public changeAmount(newAmount: number) {
-    this._amount = newAmount;
-    this.validate();
+    this._amount.setAmountValue(newAmount);
   }
 
   public changeNumber(newNumber: number) {
