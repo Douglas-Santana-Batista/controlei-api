@@ -13,11 +13,11 @@ export class Category {
   }
 
   public getAmount(): number {
-    return this._amount.getValue();
+    return this._amount.amountValue;
   }
 
   public setAmountToString(): void {
-    this._amount.toString();
+    this._amount.toString;
   }
 
   public updateAmount(newAmount: number | string): void {
