@@ -1,55 +1,52 @@
+import { date } from "zod";
+import { Cpf } from "./Cpf";
+import { Email } from "./Email";
+import { Password } from "./Password";
+
 export class User {
   public readonly id_user: number;
+  private cpf: Cpf;
   public name: string;
-  public email: string;
-  public password: string;
+  public email: Email;
+  private password: Password;
   public createdAt: Date;
   public updatedAt: Date;
 
-  constructor(id_user: number, name: string, email: string, password: string, createdAt: Date, updatedAt: Date) {
+  constructor(id_user: number, cpf: Cpf, name: string, email: Email, password: Password, createdAt: Date, updatedAt: Date) {
     this.id_user = id_user;
+    this.cpf = cpf;
     this.name = name;
     this.email = email;
     this.password = password;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
-
-    this.validate();
-  }
-
-  private validate(): void {
-    if (this.name.length < 3) {
-      throw new Error("Name must be at least 3 characters long");
-    }
-
-    if (!this.isValidEmail(this.email)) {
-      throw new Error("Invalid email address");
-    }
-
-    if (!this.isvalidPassword(this.password)) {
-      throw new Error("Password invalid");
-    }
-  }
-
-  private isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
   }
 
   public changeName(newName: string): void {
     this.name = newName;
-    this.validate();
     this.updatedAt = new Date();
   }
 
-  public changeEmail(newEmail: string): void {
-    this.email = newEmail;
-    this.validate();
+  public changeEmail(newEmail: string): string {
     this.updatedAt = new Date();
+    return this.email.setEmail(newEmail);
   }
 
-  public isvalidPassword(password: string): boolean {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return passwordRegex.test(password);
+  public getEmail() {
+    return this.email.getEmail;
+  }
+
+  public changePassword(newPassword: string): string {
+    this.updatedAt = new Date();
+    return this.password.setPassword(newPassword);
+  }
+
+  public changeCpf(newCpf: string) {
+    this.updatedAt = new Date();
+    return this.cpf.set(newCpf);
+  }
+
+  public getCpf() {
+    return this.cpf.getFormatted;
   }
 }
