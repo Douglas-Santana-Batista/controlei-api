@@ -3,6 +3,7 @@ import { dateSchema, idSchema, MonetaryValueSchema, numberSchema } from "./share
 import { toUpperCase } from "./shared.schema";
 
 export const installmentsCreateBody = z.object({
+  due_date: dateSchema,
   createdAt: dateSchema,
   amount: MonetaryValueSchema,
   number: numberSchema,

@@ -1,43 +1,47 @@
 import { Amount } from "./Amount";
 
 export class Category {
-  public readonly id: string;
-  public _name: string;
-  private _amount: Amount;
+  public readonly id_category: number;
+  public description: string;
+  public budget: Amount;
+  public createdAt: Date;
+  public updatedAt: Date;
 
-  constructor(id: string, name: string, amount: Amount) {
-    this.id = id;
-    this._name = name;
-    this._amount = amount;
+  constructor(id_category: number, name: string, budget: Amount, createdAt: Date, updatedAt: Date) {
+    this.id_category = id_category;
+    this.description = name;
+    this.budget = budget;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
     this.validate();
   }
 
   public getAmount(): number {
-    return this._amount.amountValue;
+    return this.budget.amountValue;
   }
 
   public setAmountToString(): void {
-    this._amount.toString;
+    this.budget.toString;
   }
 
   public updateAmount(newAmount: number | string): void {
-    this._amount.setAmountValue(newAmount);
+    this.budget.setAmountValue(newAmount);
   }
 
   public amountToCurrencyString(currency: string = "BRL"): string {
-    return this._amount.toCurrencyString(currency);
+    return this.budget.toCurrencyString(currency);
   }
 
   public amountToCents(): number {
-    return this._amount.toCents();
+    return this.budget.toCents();
   }
 
   public amountFromCents(cents: number): void {
-    this._amount = Amount.fromCents(cents);
+    this.budget = Amount.fromCents(cents);
   }
 
   public getName(): string {
-    return this._name;
+    return this.description;
   }
 
   private validate(): void {
@@ -47,7 +51,7 @@ export class Category {
   }
 
   public updateName(newName: string): void {
-    this._name = newName;
+    this.description = newName;
     this.validate();
   }
 }

@@ -1,9 +1,9 @@
 import { Category } from "../entities/Category";
 
 export interface CategoryRepositoryInterface {
-  findById(id: string): Promise<Category | null>;
+  findById(id: number): Promise<Category | null>;
   findAll(): Promise<Category[]>;
-  create(user: Category): Promise<Category>;
-  update(id: string, data: Category): Promise<Category>;
-  delete(id: string): Promise<void>;
+  create(category: Category, id_user: number): Promise<Category>;
+  update(id: number, id_user: number, data: Category): Promise<Category>;
+  delete(id: number): Promise<void>;
 }
