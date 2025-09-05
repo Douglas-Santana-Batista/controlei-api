@@ -1,17 +1,24 @@
-import { payment_type } from "../enums/paymentType";
+import { Financial_Flow } from "../enums/financialflow";
+import { PaymentType } from "../enums/paymentType";
 import { Amount } from "./Amount";
 
 export class Subcategory {
   public readonly id_subcategory: number;
-  private _description: string;
-  private _amount: Amount;
-  private payment_type: payment_type;
+  public _description: string;
+  public value: Amount;
+  public payment_type: PaymentType;
+  public financialFlow: Financial_Flow;
+  public createdAt: Date;
+  public updatedAt: Date;
 
-  constructor(id_subcategory: number, description: string, _amount: Amount, payment_type: payment_type) {
+  constructor(id_subcategory: number, description: string, value: Amount, payment_type: PaymentType, financialFlow: Financial_Flow, createdAt: Date, updatedAt: Date) {
     this.id_subcategory = id_subcategory;
     this._description = description;
     this.payment_type = payment_type;
-    this._amount = _amount;
+    this.financialFlow = financialFlow;
+    this.value = value;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
 
     this.validate();
   }
@@ -20,12 +27,8 @@ export class Subcategory {
     return this._description;
   }
 
-  get paymentType(): payment_type {
+  get paymentType(): PaymentType {
     return this.payment_type;
-  }
-
-  public setPaymentStatusCASH(): void {
-    this.payment_type = payment_type.CASH;
   }
 
   private validate(): void {
@@ -33,45 +36,66 @@ export class Subcategory {
       throw new Error("Description must be greater than zero");
     }
 
-    if (!Object.values(payment_type).includes(this.payment_type)) {
+    if (!Object.values(PaymentType).includes(this.payment_type)) {
       throw new Error("Invalid payment type status");
     }
   }
 
+  public setPaymentStatusCASH(): void {
+    this.payment_type = PaymentType.CASH;
+  }
+
   public setPaymentStatusCREDIT_CARD(): void {
-    this.payment_type = payment_type.CREDIT_CARD;
+    this.payment_type = PaymentType.CREDIT_CARD;
   }
 
   public setPaymentStatusDEBIT_CARD(): void {
-    this.payment_type = payment_type.DEBIT_CARD;
+    this.payment_type = PaymentType.DEBIT_CARD;
   }
 
   public setPaymentStatusPIX(): void {
-    this.payment_type = payment_type.PIX;
+    this.payment_type = PaymentType.PIX;
+  }
+
+  public setFinancialFlowEntry(): void {
+    this.financialFlow = Financial_Flow.ENTRY;
+  }
+
+  public setFinancialFlowExit(): void {
+    this.financialFlow = Financial_Flow.EXIT;
   }
 
   public changeDescription(newDescription: string) {
     this._description = newDescription;
     this.validate();
+    this.updatedAt = new Date();
   }
 
-  get amount(): number {
-    return this._amount.amountValue;
+  get returnValue(): number {
+    return this.value.amountValue;
   }
 
   get amountToString(): string {
-    return this._amount.toString;
+    return this.value.toString;
   }
 
   public amountToCurrencyString(currency: string = "BRL"): string {
-    return this._amount.toCurrencyString(currency);
+    return this.value.toCurrencyString(currency);
   }
 
-  public amountToCents(): number {
-    return this._amount.toCents();
+  public valueToCents(): number {
+    return this.value.toCents();
   }
 
   public toCents(): number {
-    return this._amount.toCents();
+    return this.value.toCents();
+  }
+
+  public updateSubcategoty() {
+    return (this.updatedAt = new Date());
+  }
+
+  public setValue(value: number) {
+    return this.value.setAmountAmount(value);
   }
 }

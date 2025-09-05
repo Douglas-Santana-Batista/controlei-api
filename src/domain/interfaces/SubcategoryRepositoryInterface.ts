@@ -1,9 +1,9 @@
 import { Subcategory } from "../entities/Subcategory";
 
 export interface SubcategoryRepositoryInterface {
-  findById(id: number): Promise<Subcategory | null>;
+  findById(id_user: number): Promise<Subcategory | null>;
   findAll(): Promise<Subcategory[]>;
-  save(subcategory: Subcategory): Promise<void>;
-  update(subcategory: Subcategory): Promise<void>;
-  delete(id: number): Promise<void>;
+  create(subcategory: Subcategory, id_category: number, id_user: number): Promise<Subcategory>;
+  update(subcategory: Subcategory, id_subcategory: number): Promise<Subcategory>;
+  delete(id_subcategory: number): Promise<void>;
 }

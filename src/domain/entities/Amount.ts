@@ -22,7 +22,7 @@ export class Amount {
     }
   }
 
-  public setAmountValue(newAmount: number | string): void {
+  public setAmountAmount(newAmount: number | string): void {
     const numericValue = typeof newAmount === "string" ? parseFloat(newAmount) : newAmount;
     this.validate(numericValue);
     this.amount = numericValue;

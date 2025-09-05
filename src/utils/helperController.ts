@@ -43,6 +43,7 @@ export function prepareData(data: InstallmentData) {
     const parcelValue = isLast ? lastInstallmentAdjustment : installmentValue;
     return {
       createdAt: addMonths(new Date(), i),
+      due_date: new Date(),
       amount: parcelValue,
       number: i + 1,
       status: data.status,

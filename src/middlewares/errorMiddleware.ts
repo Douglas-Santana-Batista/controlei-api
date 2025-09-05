@@ -3,12 +3,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ZodError } from "zod";
 import { AppError } from "../utils/AppError";
 
-export const errorHandler: ErrorRequestHandler = (
-  err: AppError,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const errorHandler: ErrorRequestHandler = (err: AppError, req: Request, res: Response, next: NextFunction) => {
   console.log(`[ERROR] ${err.message}`);
 
   let statusCode = err.statusCode || 500;
@@ -42,9 +37,7 @@ export const errorHandler: ErrorRequestHandler = (
       case "P2003":
         statusCode = 400;
         response.error = "Foreign key constraint failed";
-        response.details = err.meta?.field_name
-          ? `Invalid foreign key on field: ${err.meta.field_name}`
-          : "Invalid foreign key";
+        response.details = err.meta?.field_name ? `Invalid foreign key on field: ${err.meta.field_name}` : "Invalid foreign key";
         break;
 
       case "P2000":
