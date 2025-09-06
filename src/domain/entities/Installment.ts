@@ -1,3 +1,4 @@
+import { InstallmentStatus } from "../enums/installmentStatus";
 import { Amount } from "./Amount";
 
 export class Installment {

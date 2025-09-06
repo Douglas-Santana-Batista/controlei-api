@@ -24,8 +24,6 @@ export class UserRepository implements UserRepositoryInterface {
         name: user.name,
         password: hashedPassword,
         cpf: user.getCpf(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     });
     return new User(userData.id_user, new Cpf(userData.cpf), userData.name, new Email(userData.email), new Password(userData.password), userData.updatedAt, userData.createdAt);

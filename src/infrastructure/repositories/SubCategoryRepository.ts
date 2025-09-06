@@ -25,8 +25,6 @@ class SubCategoryRepository implements SubcategoryRepositoryInterface {
         value: valueDecimal,
         payment_type: prismaPaymentType,
         financial_flow: prismaFinancialFlow,
-        createdAt: new Date(),
-        updatedAt: new Date(),
         category: {
           connect: { id_category: id_category },
         },
@@ -72,10 +70,11 @@ class SubCategoryRepository implements SubcategoryRepositoryInterface {
     });
   }
 
-  async update(subcategory: Subcategory, id_subcategory: number): Promise<Subcategory> {
+  async update(subcategory: Subcategory): Promise<Subcategory> {
     // Converta os enums de domínio para os enums do Prisma
     const prismaPaymentType = PaymentTypeMapper.toPrisma(subcategory.paymentType);
     const prismaFinancialFlow = FinancialFlowMapper.toPrisma(subcategory.financialFlow);
+    const id = subcategory.id_subcategory;
 
     const dataToUpdate: any = {
       description: subcategory.description,
@@ -87,7 +86,7 @@ class SubCategoryRepository implements SubcategoryRepositoryInterface {
 
     // Atualize apenas pelo ID da subcategoria (chave primária)
     const update = await this.prisma.subcategory.update({
-      where: { id_subcategory: id_subcategory },
+      where: { id_subcategory: id },
       data: dataToUpdate,
     });
 

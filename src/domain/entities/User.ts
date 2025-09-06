@@ -52,4 +52,8 @@ export class User {
   public getCpf(): string {
     return this.cpf.getFormatted();
   }
+
+  public getId(): number {
+    return this.id_user;
+  }
 }
