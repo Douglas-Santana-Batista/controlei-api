@@ -1,8 +1,8 @@
 import { Installment } from "../entities/Installment";
 
-export interface SubcategoryRepositoryInterface {
-  findById(id: number): Promise<Installment | null>;
+export interface InstallmentRepositoryInterface {
+  findById(id_installment: number): Promise<Installment | null>;
   findAll(): Promise<Installment[]>;
-  save(subcategory: Installment): Promise<void>;
-  delete(id: number): Promise<void>;
+  create(installment: Installment, id_subcategory: number, id_user: number): Promise<Installment>;
+  delete(id_installment: number): Promise<void>;
 }

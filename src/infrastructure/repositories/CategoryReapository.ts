@@ -16,8 +16,6 @@ export class CategoryRepository implements CategoryRepositoryInterface {
       data: {
         description: category.getName(),
         budget: budgetDecimal,
-        createdAt: new Date(),
-        updatedAt: new Date(),
         user: {
           connect: { id_user },
         },
