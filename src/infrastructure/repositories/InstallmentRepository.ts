@@ -3,6 +3,7 @@ import { Installment } from "src/domain/entities/Installment";
 import { InstallmentRepositoryInterface } from "src/domain/interfaces/InstallmentRepositoryInterface";
 import { installment_status } from "../mappers/Installments_status";
 import { Amount } from "src/domain/entities/Amount";
+import { prepareData } from "../services/installmentService";
 
 export class InstallmentRepository implements InstallmentRepositoryInterface {
   private prisma: PrismaClient;
@@ -11,19 +12,15 @@ export class InstallmentRepository implements InstallmentRepositoryInterface {
     this.prisma = prisma;
   }
 
-  async create(installment: Installment, id_subcategory: number, id_user: number): Promise<Installment> {
+  async create(installment: Installment, id_subcategory: number, id_user: number): Promise<Installment[]> {
     const amountDecimal = new Prisma.Decimal(installment._amount.amountValue);
-    const installmentData = await this.prisma.installment.create({
-      data: {
-        amount: amountDecimal,
-        status: installment._status,
-        number: installment._number,
-        id_user: id_user,
-        id_subcategory: id_subcategory,
-      },
+    const preparedata = prepareData(installment, id_user, id_subcategory);
+    const installmentData = await this.prisma.$transaction(preparedata.map((data) => this.prisma.installment.create({ data })));
+
+    return installmentData.map((installment) => {
+      const domainInstallments = installment_status.toDomain(installment.status);
+      return new Installment(installment.id_installment, new Amount(installment.amount ? installment.amount.toNumber() : 0), domainInstallments, installment.number, installment.createdAt);
     });
-    const domainInstallments = installment_status.toDomain(installmentData.status);
-    return new Installment(installmentData.id_installment, new Amount(installmentData.amount ? installmentData.amount.toNumber() : 0), domainInstallments, installmentData.number, installmentData.createdAt);
   }
 
   async findAll(): Promise<Installment[]> {
