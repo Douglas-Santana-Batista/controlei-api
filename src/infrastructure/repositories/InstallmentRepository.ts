@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { Installment } from "src/domain/entities/Installment";
 import { InstallmentRepositoryInterface } from "src/domain/interfaces/InstallmentRepositoryInterface";
 import { installment_status } from "../mappers/Installments_status";
@@ -13,7 +13,6 @@ export class InstallmentRepository implements InstallmentRepositoryInterface {
   }
 
   async create(installment: Installment, id_subcategory: number, id_user: number): Promise<Installment[]> {
-    const amountDecimal = new Prisma.Decimal(installment._amount.amountValue);
     const preparedata = prepareData(installment, id_user, id_subcategory);
     const installmentData = await this.prisma.$transaction(preparedata.map((data) => this.prisma.installment.create({ data })));
 
