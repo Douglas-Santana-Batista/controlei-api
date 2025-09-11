@@ -6,8 +6,8 @@ import { CategoryRepositoryInterface } from "src/domain/interfaces/CategoryRepos
 export class CategoryRepository implements CategoryRepositoryInterface {
   private prisma: PrismaClient;
 
-  constructor() {
-    this.prisma = new PrismaClient();
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
   }
 
   async create(category: Category, id_user: number): Promise<Category> {

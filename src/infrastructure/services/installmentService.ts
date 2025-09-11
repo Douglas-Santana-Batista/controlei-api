@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { Installment } from "src/domain/entities/Installment";
 
-export function addMonths(date: Date, months: number): Date {
+function addMonths(date: Date, months: number): Date {
   const newDate = new Date(date);
   newDate.setMonth(newDate.getMonth() + months);
 

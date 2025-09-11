@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { User } from "src/domain/entities/User";
 import { UserRepositoryInterface } from "src/domain/interfaces/UserRepositoryInterface";
 import { EncryptionService } from "../services/EncriptionService";
@@ -11,9 +11,9 @@ export class UserRepository implements UserRepositoryInterface {
   private prisma: PrismaClient;
   private encriptionServide: EncryptionService;
 
-  constructor() {
-    this.prisma = new PrismaClient();
-    this.encriptionServide = new EncryptionService();
+  constructor(prisma: PrismaClient, encriptionService: EncryptionService) {
+    this.prisma = prisma;
+    this.encriptionServide = encriptionService;
   }
 
   async create(user: User): Promise<User> {
