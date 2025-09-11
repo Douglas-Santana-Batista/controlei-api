@@ -28,6 +28,7 @@ enum InstallmentStatus {
 
 model User {
   id_user     Int           @id @default(autoincrement())
+  publicId    String
   cpf         String        @unique
   name        String
   password    String
