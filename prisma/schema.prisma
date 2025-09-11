@@ -28,7 +28,7 @@ enum InstallmentStatus {
 
 model User {
   id_user     Int           @id @default(autoincrement())
-  cpf         String        @unique
+  cpf         String?        @unique
   name        String
   password    String
   email       String        @unique
