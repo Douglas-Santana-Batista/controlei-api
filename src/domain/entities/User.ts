@@ -3,7 +3,8 @@ import { Email } from "./Email";
 import { Password } from "./Password";
 
 export class User {
-  public readonly id_user: number;
+  public readonly id_user?: number;
+  public publicId: string;
   public cpf: Cpf;
   public name: string;
   public email: Email;
@@ -11,14 +12,15 @@ export class User {
   public createdAt: Date;
   public updatedAt: Date;
 
-  constructor(id_user: number, cpf: Cpf, name: string, email: Email, password: Password, createdAt: Date, updatedAt: Date) {
-    this.id_user = id_user;
+  constructor(publicId: string, cpf: Cpf, name: string, email: Email, password: Password, createdAt: Date, updatedAt: Date, id_user?: number) {
+    this.publicId = publicId;
     this.cpf = cpf;
     this.name = name;
     this.email = email;
     this.password = password;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.id_user = id_user;
   }
 
   public changeName(newName: string): void {
@@ -35,11 +37,6 @@ export class User {
     return this.email.get();
   }
 
-  public changePassword(newPassword: string): string {
-    this.updatedAt = new Date();
-    return this.password.setPassword(newPassword);
-  }
-
   public getPassword(): string {
     return this.password.toString();
   }
@@ -53,7 +50,7 @@ export class User {
     return this.cpf.getFormatted();
   }
 
-  public getId(): number {
-    return this.id_user;
+  public getId(): string {
+    return this.publicId;
   }
 }

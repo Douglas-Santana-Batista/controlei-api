@@ -1,22 +1,27 @@
 export class Password {
-  private password: string;
+  private value: string;
+  private isHashed: boolean;
 
-  constructor(password: string) {
-    this.validate(password);
-    this.password = password;
+  constructor(password: string, isHashed: boolean = false) {
+    if (!isHashed) {
+      this.validate(password);
+    }
+    this.value = password;
+    this.isHashed = isHashed;
   }
 
-  private validate(password: string): boolean {
+  private validate(password: string): void {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return passwordRegex.test(password);
-  }
-
-  public setPassword(newPassword: string) {
-    this.password = newPassword;
-    return this.password;
+    if (!passwordRegex.test(password)) {
+      throw new Error("Password does not meet requirements");
+    }
   }
 
   public toString(): string {
-    return this.password;
+    return this.value;
+  }
+
+  public ishashed(): boolean {
+    return this.isHashed;
   }
 }

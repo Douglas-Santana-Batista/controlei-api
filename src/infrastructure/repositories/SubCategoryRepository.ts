@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { Amount } from "src/domain/entities/Amount";
 import { Subcategory } from "src/domain/entities/Subcategory";
 import { SubcategoryRepositoryInterface } from "src/domain/interfaces/SubcategoryRepositoryInterface";
@@ -13,7 +13,7 @@ class SubCategoryRepository implements SubcategoryRepositoryInterface {
     this.prisma = prisma;
   }
 
-  async create(subcategory: Subcategory, id_category: number, id_user: number): Promise<Subcategory> {
+  async create(subcategory: Subcategory, id_category: number, publicId: string): Promise<Subcategory> {
     const valueDecimal = toDecimal(subcategory.returnValue);
 
     const prismaPaymentType = PaymentTypeMapper.toPrisma(subcategory.paymentType);
@@ -29,7 +29,7 @@ class SubCategoryRepository implements SubcategoryRepositoryInterface {
           connect: { id_category: id_category },
         },
         user: {
-          connect: { id_user: id_user },
+          connect: { publicId },
         },
       },
     });
@@ -60,8 +60,12 @@ class SubCategoryRepository implements SubcategoryRepositoryInterface {
     return new Subcategory(findData.id_subcategory, findData.description, new Amount(findData.value ? findData.value.toNumber() : 0), domainPaymentType, domainFinancialFlow, findData.createdAt, findData.updatedAt);
   }
 
-  async findAll(): Promise<Subcategory[]> {
-    const findall = await this.prisma.subcategory.findMany();
+  async findAll(publicId: string): Promise<Subcategory[]> {
+    const findall = await this.prisma.subcategory.findMany({
+      where: {
+        user: { publicId },
+      },
+    });
 
     return findall.map((findData) => {
       const domainPaymentType = PaymentTypeMapper.toDomain(findData.payment_type);
@@ -71,7 +75,6 @@ class SubCategoryRepository implements SubcategoryRepositoryInterface {
   }
 
   async update(subcategory: Subcategory): Promise<Subcategory> {
-    // Converta os enums de domínio para os enums do Prisma
     const prismaPaymentType = PaymentTypeMapper.toPrisma(subcategory.paymentType);
     const prismaFinancialFlow = FinancialFlowMapper.toPrisma(subcategory.financialFlow);
     const id = subcategory.id_subcategory;
