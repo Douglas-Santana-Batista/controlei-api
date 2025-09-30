@@ -10,14 +10,14 @@ export class CategoryRepository implements CategoryRepositoryInterface {
     this.prisma = prisma;
   }
 
-  async create(category: Category, id_user: number): Promise<Category> {
-    const budgetDecimal = new Prisma.Decimal(category.budget.amountValue);
+  async create(category: Category, publicId: string): Promise<Category> {
+    const budgetDecimal = new Prisma.Decimal(category.getAmount());
     const categoryData = await this.prisma.category.create({
       data: {
         description: category.getName(),
         budget: budgetDecimal,
         user: {
-          connect: { id_user },
+          connect: { publicId },
         },
       },
     });
@@ -42,22 +42,15 @@ export class CategoryRepository implements CategoryRepositoryInterface {
     });
   }
 
-  async update(id_category: number, id_user: number, updateData: Partial<{ description: string; amount: Amount }>): Promise<Category> {
-    const dataToUpdate: any = {};
-
-    if (updateData.description !== undefined) {
-      dataToUpdate.description = updateData.description;
-    }
-
-    if (updateData.amount !== undefined) {
-      dataToUpdate.budget = new Prisma.Decimal(updateData.amount.amountValue);
-    }
-
-    dataToUpdate.updatedAt = new Date();
-
+  async update(id_category: number, updateData: Category): Promise<Category> {
+    const budgetDecimal = new Prisma.Decimal(updateData.budget.amountValue);
     const categoryData = await this.prisma.category.update({
-      where: { id_category, id_user },
-      data: dataToUpdate,
+      where: { id_category },
+      data: {
+        description: updateData.description,
+        budget: budgetDecimal,
+        updatedAt: updateData.updatedAt,
+      },
     });
 
     return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget ? categoryData.budget.toNumber() : 0), categoryData.createdAt, categoryData.updatedAt);

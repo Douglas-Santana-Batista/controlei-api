@@ -96,6 +96,6 @@ export class Subcategory {
   }
 
   public setValue(value: number) {
-    return this.value.setAmountAmount(value);
+    return this.value.setAmountValue(value);
   }
 }

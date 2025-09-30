@@ -3,68 +3,146 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ZodError } from "zod";
 import { AppError } from "../utils/AppError";
 
-export const errorHandler: ErrorRequestHandler = (err: AppError, req: Request, res: Response, next: NextFunction) => {
-  console.log(`[ERROR] ${err.message}`);
+// Função para filtrar dados sensíveis
+function sanitizeData(data: any): any {
+  if (!data || typeof data !== "object") return data;
 
-  let statusCode = err.statusCode || 500;
-  const response: any = {
-    error: err.message || "Internal server error",
-    ...(err.details && { details: err.details }),
-  };
+  const sensitiveFields = ["password", "token", "creditCard", "cvv", "cpf"];
+  const sanitized = { ...data };
 
+  sensitiveFields.forEach((field) => {
+    if (sanitized[field]) {
+      sanitized[field] = "***REDACTED***";
+    }
+  });
+
+  return sanitized;
+}
+
+export const errorHandler: ErrorRequestHandler = (err: Error | AppError, req: Request, res: Response, next: NextFunction) => {
+  logError(err, req);
+
+  let statusCode = 500;
+  let errorMessage = "Internal server error";
+  let details: any = null;
+
+  // Tratamento para AppError (erros de negócio)
   if (err instanceof AppError) {
     statusCode = err.statusCode;
-    if (err.details) {
-      response.details = err.details;
-    }
+    errorMessage = err.message;
+    details = err.details;
   }
-
-  if (err instanceof ZodError) {
+  // Tratamento para erros de validação (Zod)
+  else if (err instanceof ZodError) {
     statusCode = 400;
-    response.error = "Validation error";
-    response.details = err.errors.map((e) => ({
+    errorMessage = "Validation error";
+    details = err.errors.map((e) => ({
       path: e.path.join("."),
-      message: e.message || "Internal server error",
+      message: e.message,
     }));
-  } else if (err instanceof PrismaClientKnownRequestError) {
-    switch (err.code) {
-      case "P2002":
-        statusCode = 409;
-        response.error = "Duplicate registration";
-        response.details = `Unique constraint failed on field(s): ${err.meta?.target}`;
-        break;
-
-      case "P2003":
-        statusCode = 400;
-        response.error = "Foreign key constraint failed";
-        response.details = err.meta?.field_name ? `Invalid foreign key on field: ${err.meta.field_name}` : "Invalid foreign key";
-        break;
-
-      case "P2000":
-        statusCode = 400;
-        response.error = "Input value is too long for the column";
-        break;
-
-      case "P2001":
-        statusCode = 404;
-        response.error = "Record not found with the specified filter";
-        break;
-
-      case "P2014":
-        statusCode = 400;
-        response.error = "Relation constraint failed";
-        break;
-
-      case "P2015":
-        statusCode = 404;
-        response.error = "Related record not found";
-        break;
-
-      case "P2025":
-        statusCode = 404;
-        response.error = "Record to update/delete does not exist";
-        break;
+  }
+  // Tratamento para erros do Prisma
+  else if (err instanceof PrismaClientKnownRequestError) {
+    const prismaError = handlePrismaError(err);
+    statusCode = prismaError.statusCode;
+    errorMessage = prismaError.message;
+    details = prismaError.details;
+  }
+  // Tratamento para outros tipos de erro
+  else {
+    // Em desenvolvimento, mostre mais detalhes
+    if (process.env.NODE_ENV === "development") {
+      details = { stack: err.stack };
     }
   }
-  res.status(statusCode).json(response);
+
+  // Finalmente, envie a resposta
+  res.status(statusCode).json({
+    error: errorMessage,
+    ...(details && { details }),
+  });
 };
+
+// Função auxiliar para tratar erros do Prisma
+function handlePrismaError(err: PrismaClientKnownRequestError): {
+  statusCode: number;
+  message: string;
+  details?: any;
+} {
+  switch (err.code) {
+    case "P2002":
+      return {
+        statusCode: 409,
+        message: "Duplicate registration",
+        details: `Unique constraint failed on field(s): ${err.meta?.target}`,
+      };
+
+    case "P2003":
+      return {
+        statusCode: 400,
+        message: "Foreign key constraint failed",
+        details: err.meta?.field_name ? `Invalid foreign key on field: ${err.meta.field_name}` : "Invalid foreign key",
+      };
+
+    case "P2000":
+      return {
+        statusCode: 400,
+        message: "Input value is too long for the column",
+      };
+
+    case "P2001":
+      return {
+        statusCode: 404,
+        message: "Record not found with the specified filter",
+      };
+
+    case "P2014":
+      return {
+        statusCode: 400,
+        message: "Relation constraint failed",
+      };
+
+    case "P2015":
+      return {
+        statusCode: 404,
+        message: "Related record not found",
+      };
+
+    case "P2025":
+      return {
+        statusCode: 404,
+        message: "Record to update/delete does not exist",
+      };
+
+    default:
+      return {
+        statusCode: 500,
+        message: "Database error occurred",
+        details: process.env.NODE_ENV === "development" ? err.message : undefined,
+      };
+  }
+}
+
+// Função para log de erros
+function logError(err: Error, req: Request) {
+  // Em produção, evite logar informações sensíveis
+  const logData: any = {
+    timestamp: new Date().toISOString(),
+    method: req.method,
+    path: req.path,
+    message: err.message,
+  };
+
+  // Apenas em desenvolvimento, adicione mais detalhes
+  if (process.env.NODE_ENV === "development") {
+    logData.stack = err.stack;
+    logData.body = sanitizeData(req.body); // Usando a função sanitizeData aqui
+
+    // Cuidado com dados sensíveis - você pode querer filtrar
+    if (req.user) {
+      logData.user = sanitizeData(req.user);
+    }
+  }
+
+  console.error(logData);
+}
