@@ -87,7 +87,6 @@ class SubCategoryRepository implements SubcategoryRepositoryInterface {
       updatedAt: new Date(),
     };
 
-    // Atualize apenas pelo ID da subcategoria (chave primária)
     const update = await this.prisma.subcategory.update({
       where: { id_subcategory: id },
       data: dataToUpdate,
