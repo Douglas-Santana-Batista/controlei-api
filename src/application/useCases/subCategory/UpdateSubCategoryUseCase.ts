@@ -1,7 +1,6 @@
-import { Amount } from "src/domain/entities/Amount";
 import { Subcategory } from "src/domain/entities/Subcategory";
 import { SubcategoryRepositoryInterface } from "src/domain/interfaces/SubcategoryRepositoryInterface";
-import { AppError } from "src/utils/AppError";
+import { AppError } from "src/shared/error/AppError";
 
 class UpdateSubCategoryUseCase {
   constructor(private subcategoryInterface: SubcategoryRepositoryInterface) {}

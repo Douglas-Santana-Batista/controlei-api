@@ -1,7 +1,7 @@
 import { Request, Response, RequestHandler, NextFunction } from "express";
 import { subcategoryIdParamsSchema, subCategorybodySchema, subcategoryupdateParamsSchema, subcategorydeleteParamsSchema, updateSubCategorybodySchema, subcategoryGetSchema, subcategorygetuser } from "../schemas/subCategorySchema";
-import prisma from "../models/prisma";
-import { AppError } from "../utils/AppError";
+import prisma from "../infrastructure/database/prisma";
+import { AppError } from "../shared/error/AppError";
 
 export const createsubCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {

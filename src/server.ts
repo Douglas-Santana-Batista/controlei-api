@@ -1,9 +1,9 @@
 import express from "express";
-import { router } from "./routes/router";
-import { errorHandler } from "./middlewares/errorMiddleware";
+import { errorHandler } from "./infrastructure/middlewares/errorMiddleware";
 import dotenv from "dotenv";
 import SwaggerUi from "swagger-ui-express";
 import swaggerDoc from "./swagger.json";
+import { router } from "./infrastructure/routes/UserRoutes";
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;

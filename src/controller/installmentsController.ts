@@ -1,7 +1,7 @@
 import { NextFunction, RequestHandler, Request, Response } from "express";
 import { deleteInstallmentParams, getallInstallmentSchema, getinstallmentsSchema, installmentsCreateBody, installmentsCreateParams, installmentsUpdateBody, updateInstallmentParams } from "../schemas/installmentsSchema";
-import prisma from "../models/prisma";
-import { prepareData } from "../utils/helperController";
+import prisma from "../infrastructure/database/prisma";
+import { prepareData } from "../shared/utils/helperController";
 
 export const createInstallments: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {

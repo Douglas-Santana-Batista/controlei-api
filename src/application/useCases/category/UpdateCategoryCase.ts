@@ -1,6 +1,6 @@
 import { Category } from "src/domain/entities/Category";
 import { CategoryRepositoryInterface } from "src/domain/interfaces/CategoryRepositoryInterface";
-import { AppError } from "src/utils/AppError";
+import { AppError } from "src/shared/error/AppError";
 
 export class UpdateCategoryCase {
   constructor(private categoryRepositoryInterface: CategoryRepositoryInterface) {}

@@ -1,7 +1,7 @@
 import { Request, Response, RequestHandler, NextFunction } from "express";
-import prisma from "../models/prisma";
+import prisma from "../infrastructure/database/prisma";
 import { categorybodySchema, IdcategoryParamsSchema, IdDeletecategoryParamsSchema, IdupdatecategoryParamsSchema } from "../schemas/categorySchema";
-import { AppError } from "../utils/AppError";
+import { AppError } from "../shared/error/AppError";
 
 export const createCategory: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {

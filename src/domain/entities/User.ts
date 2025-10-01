@@ -5,14 +5,14 @@ import { Password } from "./Password";
 export class User {
   public readonly id_user?: number;
   public publicId: string;
-  public cpf: Cpf;
+  public cpf: Cpf | null;
   public name: string;
   public email: Email;
   public password: Password;
   public createdAt: Date;
   public updatedAt: Date;
 
-  constructor(publicId: string, cpf: Cpf, name: string, email: Email, password: Password, createdAt: Date, updatedAt: Date, id_user?: number) {
+  constructor(publicId: string, cpf: Cpf | null, name: string, email: Email, password: Password, createdAt: Date, updatedAt: Date, id_user?: number) {
     this.publicId = publicId;
     this.cpf = cpf;
     this.name = name;
@@ -41,12 +41,18 @@ export class User {
     return this.password.toString();
   }
 
-  public changeCpf(newCpf: string) {
+  public changeCpf(newCpf: string): string | null {
     this.updatedAt = new Date();
+    if (!this.cpf) {
+      return null;
+    }
     return this.cpf.set(newCpf);
   }
 
-  public getCpf(): string {
+  public getCpf(): string | null {
+    if (!this.cpf) {
+      return null;
+    }
     return this.cpf.getFormatted();
   }
 

@@ -2,6 +2,9 @@ export class Cpf {
   private cpf: string;
 
   constructor(cpf: string) {
+    if (!cpf) {
+      throw new Error("CPF is required");
+    }
     if (!this.validation(cpf)) {
       throw new Error("Invalid CPF");
     }
@@ -68,10 +71,10 @@ export class Cpf {
     return this.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
   }
 
-  public set(newCpf: string): void {
+  public set(newCpf: string): string {
     if (!this.validation(newCpf)) {
       throw new Error("Invalid CPF");
     }
-    this.cpf = this.normalizeCpf(newCpf);
+    return (this.cpf = this.normalizeCpf(newCpf));
   }
 }

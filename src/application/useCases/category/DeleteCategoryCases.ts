@@ -1,5 +1,5 @@
 import { CategoryRepositoryInterface } from "src/domain/interfaces/CategoryRepositoryInterface";
-import { AppError } from "src/utils/AppError";
+import { AppError } from "src/shared/error/AppError";
 
 export class DeleteCategoryCases {
   constructor(private categoryRepositoryInterface: CategoryRepositoryInterface) {}
