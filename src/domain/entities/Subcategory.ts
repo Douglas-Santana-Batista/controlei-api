@@ -1,5 +1,6 @@
 import { Financial_Flow } from "../enums/financialflow";
 import { PaymentType } from "../enums/paymentType";
+import { InvalidAmountError } from "../errors/DomainErrors";
 import { Amount } from "./Amount";
 
 export class Subcategory {
@@ -33,11 +34,11 @@ export class Subcategory {
 
   private validate(): void {
     if (this._description.length <= 0) {
-      throw new Error("Description must be greater than zero");
+      throw new InvalidAmountError("Description must be greater than zero");
     }
 
     if (!Object.values(PaymentType).includes(this.payment_type)) {
-      throw new Error("Invalid payment type status");
+      throw new InvalidAmountError("Invalid payment type status");
     }
   }
 

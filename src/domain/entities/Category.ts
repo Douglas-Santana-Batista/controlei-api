@@ -1,3 +1,4 @@
+import { InvalidAmountError } from "../errors/DomainErrors";
 import { Amount } from "./Amount";
 
 export class Category {
@@ -46,7 +47,7 @@ export class Category {
 
   private validate(): void {
     if (this.getName.length < 1) {
-      throw new Error("Name must be at least 0 characters long");
+      throw new InvalidAmountError("Name must be at least 0 characters long");
     }
   }
 

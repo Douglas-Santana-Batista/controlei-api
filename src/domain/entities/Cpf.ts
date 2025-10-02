@@ -1,12 +1,14 @@
+import { InvalidAmountError } from "../errors/DomainErrors";
+
 export class Cpf {
   private cpf: string;
 
   constructor(cpf: string) {
     if (!cpf) {
-      throw new Error("CPF is required");
+      throw new InvalidAmountError("CPF is required");
     }
     if (!this.validation(cpf)) {
-      throw new Error("Invalid CPF");
+      throw new InvalidAmountError("Invalid CPF");
     }
     this.cpf = this.normalizeCpf(cpf);
   }
@@ -20,7 +22,7 @@ export class Cpf {
 
     // Verifica se tem 11 dígitos
     if (normalizedCpf.length !== 11) {
-      throw new Error("CPF must have 11 digits");
+      throw new InvalidAmountError("CPF must have 11 digits");
     }
 
     // Verifica se não é uma sequência de números iguais

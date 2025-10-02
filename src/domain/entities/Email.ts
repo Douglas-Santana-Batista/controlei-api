@@ -1,3 +1,5 @@
+import { InvalidAmountError } from "../errors/DomainErrors";
+
 export class Email {
   private email: string;
 
@@ -9,7 +11,7 @@ export class Email {
   private validate(email: string): void {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      throw new Error("Invalid email address");
+      throw new InvalidAmountError("Invalid email address");
     }
   }
 

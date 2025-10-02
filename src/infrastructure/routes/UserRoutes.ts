@@ -5,7 +5,6 @@ import { EncryptionService } from "src/infrastructure/services/EncriptionService
 import { UserController } from "../controllers/Usercontroller";
 import { CreateUserCase } from "src/application/useCases/user/CreateUserCase";
 import prisma from "../database/prisma";
-import { v4 as uuidv4 } from "uuid";
 import { UuidIdProvider } from "../services/UuidIdProvider";
 
 export const router = Router();
@@ -18,4 +17,4 @@ const createUserCase = new CreateUserCase(userRepository, id, encryptionService)
 const userController = new UserController(createUserCase);
 
 // Rotas
-router.post("/register", (req, res) => userController.create(req, res));
+router.post("/register", (req, res, next) => userController.create(req, res, next));
