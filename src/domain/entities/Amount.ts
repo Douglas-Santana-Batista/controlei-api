@@ -1,3 +1,5 @@
+import { InvalidAmountError } from "../errors/DomainErrors";
+
 export class Amount {
   private amount: number;
 
@@ -10,15 +12,13 @@ export class Amount {
 
   private validate(amount: number): void {
     if (isNaN(amount)) {
-      throw new Error("Amount must be a valid number");
+      throw new InvalidAmountError("Amount must be a valid number");
     }
-
     if (amount < 0) {
-      throw new Error("Amount cannot be negative");
+      throw new InvalidAmountError("Amount cannot be negative");
     }
-
     if (!Number.isFinite(amount)) {
-      throw new Error("Amount must be a finite number");
+      throw new InvalidAmountError("Amount must be a finite number");
     }
   }
 

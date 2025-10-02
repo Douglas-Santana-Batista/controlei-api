@@ -26,6 +26,24 @@ export const errorHandler: ErrorRequestHandler = (err: Error | AppError, req: Re
   let errorMessage = "Internal server error";
   let details: any = null;
 
+  if (err instanceof AppError) {
+    const response: any = {
+      error: err.message,
+    };
+
+    // Inclui o code se existir
+    if (err.code) {
+      response.code = err.code;
+    }
+
+    // Em desenvolvimento, inclui stack trace
+    if (process.env.NODE_ENV === "development") {
+      response.stack = err.stack;
+    }
+
+    return res.status(err.statusCode).json(response);
+  }
+
   // Tratamento para AppError (erros de negócio)
   if (err instanceof AppError) {
     statusCode = err.statusCode;

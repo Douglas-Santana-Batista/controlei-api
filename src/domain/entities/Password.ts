@@ -1,3 +1,5 @@
+import { InvalidPasswordError } from "../errors/DomainErrors";
+
 export class Password {
   private value: string;
   private isHashed: boolean;
@@ -11,10 +13,26 @@ export class Password {
   }
 
   private validate(password: string): void {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    if (!passwordRegex.test(password)) {
-      console.log(password);
-      throw new Error("Password does not meet requirements");
+    const errors: string[] = [];
+
+    if (password.length < 8) {
+      errors.push("at least 8 characters");
+    }
+
+    if (!/(?=.*[a-z])/.test(password)) {
+      errors.push("at least one lowercase letter");
+    }
+
+    if (!/(?=.*[A-Z])/.test(password)) {
+      errors.push("at least one uppercase letter");
+    }
+
+    if (!/(?=.*\d)/.test(password)) {
+      errors.push("at least one number");
+    }
+
+    if (errors.length > 0) {
+      throw new InvalidPasswordError(errors);
     }
   }
 

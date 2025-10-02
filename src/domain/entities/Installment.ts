@@ -1,4 +1,5 @@
 import { InstallmentStatus } from "../enums/installmentStatus";
+import { InvalidAmountError } from "../errors/DomainErrors";
 import { Amount } from "./Amount";
 
 export class Installment {
@@ -48,15 +49,15 @@ export class Installment {
 
   private validate() {
     if (this._number <= 0) {
-      throw new Error("Value must be greater than zero");
+      throw new InvalidAmountError("Value must be greater than zero");
     }
 
     if (!Object.values(InstallmentStatus).includes(this._status)) {
-      throw new Error("Invalid installment status");
+      throw new InvalidAmountError("Invalid installment status");
     }
 
     if (this.createdAt > new Date()) {
-      throw new Error("Creation date cannot be in the future");
+      throw new InvalidAmountError("Creation date cannot be in the future");
     }
   }
 
