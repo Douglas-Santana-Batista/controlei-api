@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ZodError } from "zod";
-import { AppError } from "../utils/AppError";
+import { AppError } from "../../shared/error/AppError";
 
 // Função para filtrar dados sensíveis
 function sanitizeData(data: any): any {

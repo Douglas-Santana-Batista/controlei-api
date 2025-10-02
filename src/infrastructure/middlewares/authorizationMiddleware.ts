@@ -1,10 +1,10 @@
 import { RequestHandler } from "express";
-import { AppError } from "../utils/AppError";
+import { AppError } from "../../shared/error/AppError";
 
 declare module "express-serve-static-core" {
   interface Request {
     user?: {
-      id_user: number;
+      publicId: string;
     };
   }
 }
@@ -14,8 +14,8 @@ export const authorizeUser: RequestHandler = (req, res, next) => {
     if (!req.user) {
       throw new AppError("Authentication required", 401);
     }
-    const authenticatedUserId = Number(req.user.id_user);
-    const targetUserId = Number(req.params.id_user);
+    const authenticatedUserId = Number(req.user.publicId);
+    const targetUserId = Number(req.params.publicId);
 
     if (authenticatedUserId !== targetUserId) {
       throw new AppError("Access denied: You can only modify your own data", 403);

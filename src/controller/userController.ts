@@ -1,8 +1,8 @@
 import { Request, Response, RequestHandler, NextFunction } from "express";
-import prisma from "../models/prisma";
+import prisma from "../infrastructure/database/prisma";
 import { loginSchema, updateUserSchema, UserCreateSchema, userIdParamsSchema } from "../schemas/userSchema";
-import { AppError } from "../utils/AppError";
-import { comparePasswords, createToken } from "../utils/authUtils";
+import { AppError } from "../shared/error/AppError";
+import { comparePasswords, createToken } from "../shared/utils/authUtils";
 import bcrypt from "bcrypt";
 
 export const createUser: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {

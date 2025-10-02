@@ -13,6 +13,7 @@ export class Password {
   private validate(password: string): void {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
+      console.log(password);
       throw new Error("Password does not meet requirements");
     }
   }

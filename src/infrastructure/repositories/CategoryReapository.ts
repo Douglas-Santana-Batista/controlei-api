@@ -42,10 +42,10 @@ export class CategoryRepository implements CategoryRepositoryInterface {
     });
   }
 
-  async update(id_category: number, updateData: Category): Promise<Category> {
+  async update(updateData: Category): Promise<Category> {
     const budgetDecimal = new Prisma.Decimal(updateData.budget.amountValue);
     const categoryData = await this.prisma.category.update({
-      where: { id_category },
+      where: { id_category: updateData.id_category },
       data: {
         description: updateData.description,
         budget: budgetDecimal,

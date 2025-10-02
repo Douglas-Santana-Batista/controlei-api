@@ -1,7 +1,7 @@
 import { Email } from "src/domain/entities/Email";
 import { User } from "src/domain/entities/User";
 import { UserRepositoryInterface } from "src/domain/interfaces/UserRepositoryInterface";
-import { AppError } from "src/utils/AppError";
+import { AppError } from "src/shared/error/AppError";
 
 export class FindUserUseCase {
   constructor(private userRepository: UserRepositoryInterface) {}

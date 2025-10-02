@@ -23,7 +23,7 @@ export class UserRepository implements UserRepositoryInterface {
         cpf: user.getCpf(),
       },
     });
-    return new User(userData.publicId, new Cpf(userData.cpf), userData.name, new Email(userData.email), new Password(userData.password, true), userData.updatedAt, userData.createdAt);
+    return new User(userData.publicId, userData.cpf ? new Cpf(userData.cpf) : null, userData.name, new Email(userData.email), new Password(userData.password, true), userData.updatedAt, userData.createdAt);
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -32,7 +32,7 @@ export class UserRepository implements UserRepositoryInterface {
     });
 
     if (!userData) return null;
-    return new User(userData.publicId, new Cpf(userData.cpf), userData.name, new Email(userData.email), new Password(userData.password), userData.updatedAt, userData.createdAt);
+    return new User(userData.publicId, userData.cpf ? new Cpf(userData.cpf) : null, userData.name, new Email(userData.email), new Password(userData.password, true), userData.updatedAt, userData.createdAt);
   }
 
   async findById(publicId: string): Promise<User | null> {
@@ -41,7 +41,7 @@ export class UserRepository implements UserRepositoryInterface {
     });
 
     if (!userData) return null;
-    return new User(userData.publicId, new Cpf(userData.cpf), userData.name, new Email(userData.email), new Password(userData.password), userData.updatedAt, userData.createdAt);
+    return new User(userData.publicId, userData.cpf ? new Cpf(userData.cpf) : null, userData.name, new Email(userData.email), new Password(userData.password, true), userData.updatedAt, userData.createdAt);
   }
 
   async update(publicId: string, dataToUpdate: UpdateUserDTO): Promise<User> {
@@ -56,7 +56,7 @@ export class UserRepository implements UserRepositoryInterface {
       },
     });
 
-    return new User(userData.publicId, new Cpf(userData.cpf), userData.name, new Email(userData.email), new Password(userData.password, true), userData.updatedAt, userData.createdAt);
+    return new User(userData.publicId, userData.cpf ? new Cpf(userData.cpf) : null, userData.name, new Email(userData.email), new Password(userData.password, true), userData.updatedAt, userData.createdAt);
   }
 
   async delete(publicId: string): Promise<void> {
