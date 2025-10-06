@@ -13,7 +13,7 @@ function addMonths(date: Date, months: number): Date {
   return newDate;
 }
 
-export function prepareData(data: Installment, id_user: number, id_subcategory: number) {
+export function prepareData(data: Installment, publicId: string, id_subcategory: number) {
   const totalAmount = new Prisma.Decimal(data.amount);
   const installmentValue = totalAmount.dividedBy(data.number).toDecimalPlaces(2);
   const lastInstallmentAdjustment = totalAmount.minus(installmentValue.times(data.number - 1));
@@ -27,7 +27,7 @@ export function prepareData(data: Installment, id_user: number, id_subcategory: 
       amount: parcelValue,
       number: i + 1,
       status: data.status,
-      id_user: id_user,
+      publicId: publicId,
       id_subcategory: id_subcategory,
     };
   });

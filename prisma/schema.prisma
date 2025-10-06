@@ -79,10 +79,10 @@ model Installment {
   number         Int
   createdAt      DateTime          @default(now())
   id_subcategory Int
-  id_user        Int
-  user           User              @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  publicId       String
+  user           User              @relation(fields: [publicId], references: [publicId], onDelete: Cascade)
   subcategory    Subcategory       @relation("SubcategoryInstallments", fields: [id_subcategory], references: [id_subcategory], onDelete: Cascade)
 
-  @@index([id_user], name: "idx_installment_user")
+  @@index([publicId], name: "idx_installment_user")
   @@index([status], name: "idx_installment_status")
 }

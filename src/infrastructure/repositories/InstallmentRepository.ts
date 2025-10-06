@@ -12,8 +12,8 @@ export class InstallmentRepository implements InstallmentRepositoryInterface {
     this.prisma = prisma;
   }
 
-  async create(installment: Installment, id_subcategory: number, id_user: number): Promise<Installment[]> {
-    const preparedata = prepareData(installment, id_user, id_subcategory);
+  async create(installment: Installment, id_subcategory: number, publicId: string): Promise<Installment[]> {
+    const preparedata = prepareData(installment, publicId, id_subcategory);
     const installmentData = await this.prisma.$transaction(preparedata.map((data) => this.prisma.installment.create({ data })));
 
     return installmentData.map((installment) => {
