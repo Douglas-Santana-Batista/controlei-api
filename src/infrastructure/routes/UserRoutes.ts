@@ -23,3 +23,4 @@ const userController = new UserController(createUserCase, findUser, deleteUser);
 // User rotes
 router.post("/register", (req, res, next) => userController.create(req, res, next));
 router.get("/find/", (req, res, next) => userController.find(req, res, next));
+router.delete("/deleteUser/:publicId", (req, res, next) => userController.delete(req, res, next));

@@ -89,7 +89,8 @@ export class UserController {
 
   async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { publicId } = req.body;
+      const { publicId } = req.params;
+      console.log(publicId);
 
       if (!publicId) {
         throw new AppError("Provide only one filter: id", 400);
