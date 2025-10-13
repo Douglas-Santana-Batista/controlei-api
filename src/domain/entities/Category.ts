@@ -46,7 +46,7 @@ export class Category {
   }
 
   private validate(): void {
-    if (this.getName.length < 1) {
+    if (this.description.length < 1) {
       throw new InvalidAmountError("Name must be at least 0 characters long");
     }
   }

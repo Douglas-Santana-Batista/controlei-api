@@ -14,9 +14,9 @@ export class FindCategoryCase {
     }
   }
 
-  async executeFindAll(): Promise<Category[] | null> {
+  async executeFindAll(publicId: string): Promise<Category[] | null> {
     try {
-      const categoryData = await this.categoryRepositoryInterface.findAll();
+      const categoryData = await this.categoryRepositoryInterface.findAll(publicId);
       return categoryData;
     } catch (error) {
       throw ErrorMapper.toAppError(error);

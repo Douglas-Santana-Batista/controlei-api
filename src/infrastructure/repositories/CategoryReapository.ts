@@ -2,6 +2,7 @@ import { Prisma, PrismaClient } from "@prisma/client";
 import { Amount } from "src/domain/entities/Amount";
 import { Category } from "src/domain/entities/Category";
 import { CategoryRepositoryInterface } from "src/domain/interfaces/CategoryRepositoryInterface";
+import { PaginationParams, PaginationResult } from "src/domain/types/PaginationTypes";
 
 export class CategoryRepository implements CategoryRepositoryInterface {
   private prisma: PrismaClient;
@@ -42,6 +43,37 @@ export class CategoryRepository implements CategoryRepositoryInterface {
     });
   }
 
+  async findAllPaginated(params: PaginationParams): Promise<PaginationResult<Category>> {
+    const { page, limit } = params;
+    const skip = (page - 1) * limit;
+
+    const [categoriesData, total] = await Promise.all([
+      this.prisma.category.findMany({
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+        include: { user: true },
+      }),
+      this.prisma.category.count(),
+    ]);
+
+    const categories = categoriesData.map((categoryData) => this.toDomain(categoryData));
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data: categories,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrevious: page > 1,
+      },
+    };
+  }
+
   async update(updateData: Category): Promise<Category> {
     const budgetDecimal = new Prisma.Decimal(updateData.budget.amountValue);
     const categoryData = await this.prisma.category.update({
@@ -60,5 +92,9 @@ export class CategoryRepository implements CategoryRepositoryInterface {
     await this.prisma.category.delete({
       where: { id_category },
     });
+  }
+
+  private toDomain(categoryData: any): Category {
+    return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget?.toNumber() ?? 0), categoryData.createdAt, categoryData.updatedAt);
   }
 }

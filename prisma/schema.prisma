@@ -17,7 +17,7 @@ enum PaymentType {
   CREDIT_CARD
   DEBIT_CARD
   BOLETO
-  PIX 
+  PIX
 }
 
 enum InstallmentStatus {
@@ -29,7 +29,7 @@ enum InstallmentStatus {
 model User {
   id_user     Int           @id @default(autoincrement())
   publicId    String        @unique
-  cpf         String?        @unique
+  cpf         String?       @unique
   name        String
   password    String
   email       String        @unique
@@ -73,15 +73,16 @@ model Subcategory {
 }
 
 model Installment {
-  id_installment Int               @id @default(autoincrement())
-  amount         Decimal           @db.Decimal(10, 2)
-  status         InstallmentStatus @default(PENDING)
-  number         Int
-  createdAt      DateTime          @default(now())
-  id_subcategory Int
-  publicId       String
-  user           User              @relation(fields: [publicId], references: [publicId], onDelete: Cascade)
-  subcategory    Subcategory       @relation("SubcategoryInstallments", fields: [id_subcategory], references: [id_subcategory], onDelete: Cascade)
+  id_installment  Int               @id @default(autoincrement())
+  amount          Decimal           @db.Decimal(10, 2)
+  status          InstallmentStatus @default(PENDING)
+  group_public_id String
+  number          Int
+  createdAt       DateTime          @default(now())
+  id_subcategory  Int
+  publicId        String
+  user            User              @relation(fields: [publicId], references: [publicId], onDelete: Cascade)
+  subcategory     Subcategory       @relation("SubcategoryInstallments", fields: [id_subcategory], references: [id_subcategory], onDelete: Cascade)
 
   @@index([publicId], name: "idx_installment_user")
   @@index([status], name: "idx_installment_status")

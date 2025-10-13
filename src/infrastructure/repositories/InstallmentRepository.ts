@@ -40,7 +40,9 @@ export class InstallmentRepository implements InstallmentRepositoryInterface {
     return new Installment(installmentFind.id_installment, new Amount(installmentFind.amount ? installmentFind.amount.toNumber() : 0), domainInstallments, installmentFind.number, installmentFind.createdAt);
   }
 
-  async delete(id_installment: number): Promise<void> {
-    await this.prisma.installment.delete({ where: { id_installment } });
+  async delete(group_public_id: string): Promise<void> {
+    await this.prisma.installment.deleteMany({
+      where: { group_public_id },
+    });
   }
 }

@@ -22,10 +22,7 @@ function sanitizeData(data: any): any {
 export const errorHandler: ErrorRequestHandler = (err: Error | AppError, req: Request, res: Response, next: NextFunction) => {
   logError(err, req);
 
-  let statusCode = 500;
-  let errorMessage = "Internal server error";
-  let details: any = null;
-
+  // ✅ CORREÇÃO: Removemos a duplicação - apenas UMA verificação para AppError
   if (err instanceof AppError) {
     const response: any = {
       error: err.message,
@@ -44,14 +41,14 @@ export const errorHandler: ErrorRequestHandler = (err: Error | AppError, req: Re
     return res.status(err.statusCode).json(response);
   }
 
-  // Tratamento para AppError (erros de negócio)
-  if (err instanceof AppError) {
-    statusCode = err.statusCode;
-    errorMessage = err.message;
-    details = err.details;
-  }
+  let statusCode = 500;
+  let errorMessage = "Internal server error";
+  let details: any = null;
+
+  // ✅ AGORA APENAS OUTROS TIPOS DE ERRO (AppError já foi tratado acima)
+
   // Tratamento para erros de validação (Zod)
-  else if (err instanceof ZodError) {
+  if (err instanceof ZodError) {
     statusCode = 400;
     errorMessage = "Validation error";
     details = err.errors.map((e) => ({
@@ -66,22 +63,33 @@ export const errorHandler: ErrorRequestHandler = (err: Error | AppError, req: Re
     errorMessage = prismaError.message;
     details = prismaError.details;
   }
-  // Tratamento para outros tipos de erro
-  else {
+  // Tratamento para outros tipos de erro (Error genérico)
+  else if (err instanceof Error) {
+    // ✅ CORREÇÃO: Para erros genéricos, use a mensagem real
+    errorMessage = err.message;
+
     // Em desenvolvimento, mostre mais detalhes
     if (process.env.NODE_ENV === "development") {
       details = { stack: err.stack };
     }
   }
 
-  // Finalmente, envie a resposta
-  res.status(statusCode).json({
+  // ✅ FINALMENTE, envie a resposta
+  const responseBody: any = {
     error: errorMessage,
     ...(details && { details }),
-  });
+  };
+
+  // ✅ CORREÇÃO: Adicione informações úteis para identificar o erro
+  if (process.env.NODE_ENV === "development") {
+    responseBody.timestamp = new Date().toISOString();
+    responseBody.path = req.path;
+  }
+
+  res.status(statusCode).json(responseBody);
 };
 
-// Função auxiliar para tratar erros do Prisma
+// Função auxiliar para tratar erros do Prisma (mantenha igual)
 function handlePrismaError(err: PrismaClientKnownRequestError): {
   statusCode: number;
   message: string;
@@ -141,9 +149,8 @@ function handlePrismaError(err: PrismaClientKnownRequestError): {
   }
 }
 
-// Função para log de erros
+// Função para log de erros (mantenha igual)
 function logError(err: Error, req: Request) {
-  // Em produção, evite logar informações sensíveis
   const logData: any = {
     timestamp: new Date().toISOString(),
     method: req.method,
@@ -151,12 +158,10 @@ function logError(err: Error, req: Request) {
     message: err.message,
   };
 
-  // Apenas em desenvolvimento, adicione mais detalhes
   if (process.env.NODE_ENV === "development") {
     logData.stack = err.stack;
-    logData.body = sanitizeData(req.body); // Usando a função sanitizeData aqui
+    logData.body = sanitizeData(req.body);
 
-    // Cuidado com dados sensíveis - você pode querer filtrar
     if (req.user) {
       logData.user = sanitizeData(req.user);
     }

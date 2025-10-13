@@ -3,11 +3,17 @@ import { NextFunction, Request, Response } from "express";
 import { CreateUserCase } from "src/application/useCases/user/CreateUserCase";
 import { DeleteCases } from "src/application/useCases/user/DeleteCase";
 import { FindUserUseCase } from "src/application/useCases/user/FindUserCase";
+import { Email } from "src/domain/entities/Email";
+import { Password } from "src/domain/entities/Password";
+import { IIdProvider } from "src/domain/services/IIdProvider";
 import { User } from "src/domain/entities/User";
 import { AppError } from "src/shared/error/AppError";
+import { EncryptionService } from "../services/EncriptionService";
+import { Cpf } from "src/domain/entities/Cpf";
+import { updateCase } from "src/application/useCases/user/updateCase";
 
 export class UserController {
-  constructor(private createUserCase: CreateUserCase, private findUser: FindUserUseCase, private deleteUser: DeleteCases) {}
+  constructor(private createUserCase: CreateUserCase, private findUser: FindUserUseCase, private updateUser: updateCase, private deleteUser: DeleteCases, private idProvider: IIdProvider, private encriptionServide: EncryptionService) {}
 
   private toUserResponse(user: User | null) {
     if (!user) return null;
@@ -33,8 +39,19 @@ export class UserController {
 
         throw new AppError(`Missing required fields: ${missingFields.join(", ")}`, 400);
       }
+      const entityPassword = new Password(password.toString());
+      const hashedPassword = await this.encriptionServide.hashPassword(entityPassword.toString());
+      const entityEmail = new Email(email.toString());
+      const publicId = this.idProvider.generate();
+      let entityCpf: Cpf | null = null;
+      if (req.body.cpf) {
+        entityCpf = new Cpf(req.body.cpf);
+      }
 
-      const userData = await this.createUserCase.executeCreate(req.body);
+      const hashedPasswordEntity = new Password(hashedPassword, true);
+      const user = new User(publicId, entityCpf, name, entityEmail, hashedPasswordEntity, new Date(), new Date());
+
+      const userData = await this.createUserCase.executeCreate(user);
 
       const userResponse = this.toUserResponse(userData);
 
@@ -87,6 +104,57 @@ export class UserController {
     }
   }
 
+  async update(req: Request, res: Response, next: NextFunction): Promise<User | void> {
+    try {
+      const { publicId } = req.params;
+      const { name, email, password, cpf } = req.body;
+
+      const existingUser = await this.findUser.findByPublicId(publicId);
+
+      if (!existingUser) {
+        throw new Error("User not found");
+      }
+
+      const dataToUpdate: any = {};
+
+      if (password !== undefined) {
+        const strPassword = String(password);
+        const hashedPassword = await this.encriptionServide.hashPassword(strPassword);
+        dataToUpdate.password = hashedPassword;
+      }
+
+      if (email !== undefined) {
+        const strEmail = String(email);
+        const emailEntity = new Email(strEmail);
+        dataToUpdate.email = emailEntity.get();
+      }
+
+      if (name !== undefined) {
+        const strName = String(name);
+        dataToUpdate.name = strName;
+      }
+
+      if (cpf !== undefined) {
+        const strCpf = String(cpf);
+        const cpfEntity = new Cpf(strCpf);
+        dataToUpdate.cpf = cpf.toString();
+      }
+
+      if (Object.keys(dataToUpdate).length === 0) {
+        throw new Error("No data to update");
+      }
+
+      dataToUpdate.updatedAt = new Date();
+
+      const userUpdated = await this.updateUser.executeUpdate(publicId, dataToUpdate);
+
+      res.status(200).json({ message: "User updated succefuly", userUpdated });
+      return;
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async delete(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { publicId } = req.params;
@@ -102,7 +170,7 @@ export class UserController {
 
       this.deleteUser.executeDelete(publicId);
 
-      res.json("User deleted success");
+      res.status(200).json("User deleted success");
       return;
     } catch (error) {
       next(error);

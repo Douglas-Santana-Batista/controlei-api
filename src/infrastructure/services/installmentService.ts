@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { Installment } from "src/domain/entities/Installment";
+import { UuidIdProvider } from "./UuidIdProvider";
 
 function addMonths(date: Date, months: number): Date {
   const newDate = new Date(date);
@@ -18,6 +19,10 @@ export function prepareData(data: Installment, publicId: string, id_subcategory:
   const installmentValue = totalAmount.dividedBy(data.number).toDecimalPlaces(2);
   const lastInstallmentAdjustment = totalAmount.minus(installmentValue.times(data.number - 1));
 
+  const uuid = new UuidIdProvider();
+
+  const group_public_id = uuid.generate();
+
   const installmentsData = Array.from({ length: data.number }, (_, i) => {
     const isLast = i === data.number - 1;
     const parcelValue = isLast ? lastInstallmentAdjustment : installmentValue;
@@ -29,6 +34,7 @@ export function prepareData(data: Installment, publicId: string, id_subcategory:
       status: data.status,
       publicId: publicId,
       id_subcategory: id_subcategory,
+      group_public_id: group_public_id,
     };
   });
 
