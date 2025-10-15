@@ -3,7 +3,8 @@ import { errorHandler } from "./infrastructure/middlewares/errorMiddleware";
 import dotenv from "dotenv";
 import SwaggerUi from "swagger-ui-express";
 import swaggerDoc from "./swagger.json";
-import { router } from "./infrastructure/routes/UserRoutes";
+import { router as userRouter } from "./infrastructure/routes/UserRoutes";
+import { router as categoryRouter } from "./infrastructure/routes/CategoryRoutes";
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
@@ -14,7 +15,8 @@ app.use("/docs", SwaggerUi.serve, SwaggerUi.setup(swaggerDoc));
 
 dotenv.config();
 
-app.use(router);
+app.use(userRouter);
+app.use(categoryRouter);
 
 app.use(errorHandler);
 

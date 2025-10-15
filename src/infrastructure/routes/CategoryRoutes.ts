@@ -20,7 +20,9 @@ const deleteCategory = new DeleteCategoryCases(categoryRepository);
 
 const categoryController = new CategoryController(createCategory, findCategory, updateCategory, deleteCategory, findAllCategory);
 
-router.post("createCategory/:publicId", (req, res, next) => categoryController.create(req, res, next));
-router.get("findCategory/:id_category", (req, res, next) => categoryController.find(req, res, next));
-router.get("findAllCategory/:publicId", (req, res, next) => categoryController.findAll(req, res, next));
-router.get("findAllCategoryPaigined/:page/:limit", (req, res, next) => categoryController.findAllPaginated(req, res, next));
+router.post("/createCategory/:publicId", (req, res, next) => categoryController.create(req, res, next));
+router.get("/findCategory/:id_category", (req, res, next) => categoryController.find(req, res, next));
+router.get("/findAllCategory/:publicId", (req, res, next) => categoryController.findAll(req, res, next));
+router.get("/findAllCategoryPaigined/:page/:limit", (req, res, next) => categoryController.findAllPaginated(req, res, next));
+router.put("/updateCategory/:id_category", (req, res, next) => categoryController.update(req, res, next));
+router.delete("/deleteCategory/:id_category", (req, res, next) => categoryController.delete(req, res, next));

@@ -22,6 +22,17 @@ function sanitizeData(data: any): any {
 export const errorHandler: ErrorRequestHandler = (err: Error | AppError, req: Request, res: Response, next: NextFunction) => {
   logError(err, req);
 
+  if (err instanceof SyntaxError && "body" in err) {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid JSON format",
+      message: "The request body contains invalid JSON syntax",
+      ...(process.env.NODE_ENV === "development" && {
+        details: err.message,
+      }),
+    });
+  }
+
   // ✅ CORREÇÃO: Removemos a duplicação - apenas UMA verificação para AppError
   if (err instanceof AppError) {
     const response: any = {

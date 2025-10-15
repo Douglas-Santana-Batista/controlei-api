@@ -5,9 +5,9 @@ import { CategoryRepositoryInterface } from "src/domain/interfaces/CategoryRepos
 export class UpdateCategoryCase {
   constructor(private categoryRepositoryInterface: CategoryRepositoryInterface) {}
 
-  async executeUpdate(updateData: Category) {
+  async executeUpdate(updateData: Category, id_category: number) {
     try {
-      const categoryUpdated = await this.categoryRepositoryInterface.update(updateData);
+      const categoryUpdated = await this.categoryRepositoryInterface.update(updateData, id_category);
 
       return categoryUpdated;
     } catch (error) {

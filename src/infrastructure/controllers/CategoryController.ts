@@ -19,6 +19,10 @@ export class CategoryController {
 
   async create(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
+      if (!req.body || typeof req.body !== "object" || Object.keys(req.body).length === 0) {
+        throw new AppError("Request body is required and must be a valid JSON object", 400);
+      }
+
       const { description, budget } = req.body;
       const { publicId } = req.params;
 
@@ -75,6 +79,10 @@ export class CategoryController {
 
       const categoryfound = await this.categoryFindCase.executeFindByid(idNumber);
 
+      if (!categoryfound) {
+        throw new AppError("Category not find", 404);
+      }
+
       return res.status(201).json({ message: "category find", Category: categoryfound });
     } catch (error) {
       next(error);
@@ -121,7 +129,10 @@ export class CategoryController {
     try {
       const { description, budget } = req.body;
       const { id_category } = req.params;
+      const descriptionStr = String(description);
       const id = Number(id_category);
+      const numberBudget = Number(budget);
+      const newBudget = new Amount(numberBudget);
 
       if (!id_category) {
         throw new AppError("Category ID is required for update", 400);
@@ -135,16 +146,16 @@ export class CategoryController {
       const dataToUpdate: any = {};
 
       if (description !== undefined) {
-        dataToUpdate.description = categoryData.description;
+        dataToUpdate.description = descriptionStr;
       }
 
       if (budget !== undefined) {
-        dataToUpdate.budget = budget;
+        dataToUpdate.budget = newBudget;
       }
 
-      await this.updateCategory.executeUpdate(dataToUpdate);
+      const categroyUpdated = await this.updateCategory.executeUpdate(dataToUpdate, id);
 
-      return res.status(201).json({ message: "category updated", Category: dataToUpdate });
+      return res.status(201).json({ message: "category updated", Category: categroyUpdated });
     } catch (error) {
       next(error);
     }

@@ -168,6 +168,12 @@ export class UserController {
         throw new AppError("ID must be a string", 400);
       }
 
+      const existingUser = await this.findUser.findByPublicId(publicId);
+
+      if (!existingUser) {
+        throw new AppError("User not found", 404, "USER_NOT_FOUND");
+      }
+
       this.deleteUser.executeDelete(publicId);
 
       res.status(200).json("User deleted success");
