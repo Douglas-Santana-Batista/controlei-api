@@ -12,8 +12,20 @@ import { EncryptionService } from "../services/EncriptionService";
 import { Cpf } from "src/domain/entities/Cpf";
 import { updateCase } from "src/application/useCases/user/updateCase";
 
+interface ITokenService {
+  generateToken(payload: any): string;
+}
+
 export class UserController {
-  constructor(private createUserCase: CreateUserCase, private findUser: FindUserUseCase, private updateUser: updateCase, private deleteUser: DeleteCases, private idProvider: IIdProvider, private encriptionServide: EncryptionService) {}
+  constructor(
+    private createUserCase: CreateUserCase,
+    private findUser: FindUserUseCase,
+    private updateUser: updateCase,
+    private deleteUser: DeleteCases,
+    private idProvider: IIdProvider,
+    private encriptionService: EncryptionService,
+    private tokenService: ITokenService
+  ) {}
 
   private toUserResponse(user: User | null) {
     if (!user) return null;
@@ -28,6 +40,40 @@ export class UserController {
     };
   }
 
+  async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try {
+      const { email, password } = req.body;
+
+      if (!email || !password) {
+        throw new AppError("Email and password are required", 400);
+      }
+
+      const user = await this.findUser.findByEmail(email.toString());
+      if (!user) {
+        throw new AppError("Invalid credentials", 401);
+      }
+
+      const isPasswordValid = await this.encriptionService.comparePassword(password.toString(), user.password.toString());
+
+      if (!isPasswordValid) {
+        throw new AppError("Invalid credentials", 401);
+      }
+
+      const token = this.tokenService.generateToken({
+        publicId: user.publicId,
+        email: user.email.get(),
+      });
+
+      return res.status(200).json({
+        message: "Login successful",
+        token,
+        user: this.toUserResponse(user),
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async create(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       const { name, email, password } = req.body;
@@ -40,7 +86,7 @@ export class UserController {
         throw new AppError(`Missing required fields: ${missingFields.join(", ")}`, 400);
       }
       const entityPassword = new Password(password.toString());
-      const hashedPassword = await this.encriptionServide.hashPassword(entityPassword.toString());
+      const hashedPassword = await this.encriptionService.hashPassword(entityPassword.toString());
       const entityEmail = new Email(email.toString());
       const publicId = this.idProvider.generate();
       let entityCpf: Cpf | null = null;
@@ -119,7 +165,7 @@ export class UserController {
 
       if (password !== undefined) {
         const strPassword = String(password);
-        const hashedPassword = await this.encriptionServide.hashPassword(strPassword);
+        const hashedPassword = await this.encriptionService.hashPassword(strPassword);
         dataToUpdate.password = hashedPassword;
       }
 

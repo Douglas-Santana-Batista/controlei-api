@@ -12,7 +12,8 @@ export class DeleteCategoryCases {
       if (!existing) {
         throw new AppError("Category not found", 404);
       }
-      await this.categoryRepositoryInterface.delete(id_category);
+      const categoryDeleted = await this.categoryRepositoryInterface.delete(id_category);
+      return categoryDeleted;
     } catch (error) {
       throw ErrorMapper.toAppError(error);
     }

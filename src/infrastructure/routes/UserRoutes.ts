@@ -8,8 +8,16 @@ import { UuidIdProvider } from "../services/UuidIdProvider";
 import { FindUserUseCase } from "src/application/useCases/user/FindUserCase";
 import { DeleteCases } from "src/application/useCases/user/DeleteCase";
 import { updateCase } from "src/application/useCases/user/updateCase";
+import { TokenService } from "../services/Tokenservice";
 
 export const router = Router();
+
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET environment variable is required");
+}
+
+const tokenService = new TokenService(JWT_SECRET);
 
 const userRepository = new UserRepository(prisma);
 const encryptionService = new EncryptionService();
@@ -19,8 +27,9 @@ const deleteUser = new DeleteCases(userRepository);
 const findUser = new FindUserUseCase(userRepository);
 const updateUser = new updateCase(userRepository);
 const createUserCase = new CreateUserCase(userRepository);
-const userController = new UserController(createUserCase, findUser, updateUser, deleteUser, id, encryptionService);
+const userController = new UserController(createUserCase, findUser, updateUser, deleteUser, id, encryptionService, tokenService);
 
+router.post("/login", (req, res, next) => userController.login(req, res, next));
 router.post("/register", (req, res, next) => userController.create(req, res, next));
 router.get("/find/", (req, res, next) => userController.find(req, res, next));
 router.delete("/deleteUser/:publicId", (req, res, next) => userController.delete(req, res, next));

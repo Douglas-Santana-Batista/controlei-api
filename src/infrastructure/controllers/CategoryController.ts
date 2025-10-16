@@ -163,13 +163,15 @@ export class CategoryController {
 
   async delete(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
-      const { id_category } = req.body;
+      const { id_category } = req.params;
 
-      if (!id_category) {
+      const id = Number(id_category);
+
+      if (!id) {
         throw new AppError("id  is required", 404);
       }
 
-      const categoryDeleted = await this.deleteCategory.executeDelete(id_category);
+      const categoryDeleted = await this.deleteCategory.executeDelete(id);
 
       return res.status(200).json({ message: "Category deleted", categoryDeleted });
     } catch (error) {

@@ -4,11 +4,11 @@ import { verifyToken } from "../../shared/utils/authUtils";
 
 export const authMiddleware: RequestHandler = async (req, res, next) => {
   try {
-    const autorization = req.headers.authorization?.split(" ")[1];
-    if (!autorization) {
+    const authorization = req.headers.authorization?.split(" ")[1];
+    if (!authorization) {
       throw new AppError("invalid token");
     }
-    const decoded = verifyToken(autorization) as { publicId: string };
+    const decoded = verifyToken(authorization) as { publicId: string };
     req.user = { publicId: decoded.publicId };
     next();
   } catch (error) {
