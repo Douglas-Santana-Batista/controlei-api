@@ -47,6 +47,7 @@ model Category {
   id_category Int           @id @default(autoincrement())
   description String
   budget      Decimal?      @db.Decimal(10, 2)
+  userPublicId String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   id_user     Int

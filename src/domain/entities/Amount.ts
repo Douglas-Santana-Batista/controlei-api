@@ -4,15 +4,40 @@ export class Amount {
   private amount: number;
 
   constructor(amount: number | string) {
-    const numericValue = typeof amount === "string" ? parseFloat(amount) : amount;
-
+    const numericValue = this.safeParse(amount);
     this.validate(numericValue);
     this.amount = numericValue;
   }
 
+  private safeParse(value: number | string): number {
+    if (typeof value === "number") {
+      return value;
+    }
+
+    if (typeof value === "string") {
+      const cleaned = value.trim().replace(/[^\d,-]/g, "");
+
+      const lastCommaIndex = cleaned.lastIndexOf(",");
+      let normalized = cleaned;
+
+      if (lastCommaIndex !== -1) {
+        const beforeComma = cleaned.substring(0, lastCommaIndex).replace(/,/g, "");
+        const afterComma = cleaned.substring(lastCommaIndex + 1);
+        normalized = `${beforeComma}.${afterComma}`;
+      } else {
+        normalized = cleaned.replace(/,/g, "");
+      }
+
+      const result = parseFloat(normalized);
+      return isNaN(result) ? NaN : result;
+    }
+
+    return NaN;
+  }
+
   private validate(amount: number): void {
     if (isNaN(amount)) {
-      throw new InvalidAmountError("Amount must be a valid number");
+      throw new InvalidAmountError("Amount must be a valid number. Examples: '100.50', '100,50', 100.50");
     }
     if (amount < 0) {
       throw new InvalidAmountError("Amount cannot be negative");
@@ -23,7 +48,7 @@ export class Amount {
   }
 
   public setAmountValue(newAmount: number | string): void {
-    const numericValue = typeof newAmount === "string" ? parseFloat(newAmount) : newAmount;
+    const numericValue = this.safeParse(newAmount);
     this.validate(numericValue);
     this.amount = numericValue;
   }
@@ -36,7 +61,6 @@ export class Amount {
     return this.amount.toFixed(2);
   }
 
-  // Retorna o valor formatado com símbolo monetário
   public toCurrencyString(currency: string = "BRL"): string {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",

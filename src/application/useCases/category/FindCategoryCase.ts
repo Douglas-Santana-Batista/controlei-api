@@ -8,6 +8,7 @@ export class FindCategoryCase {
   async executeFindByid(id_category: number): Promise<Category | null> {
     try {
       const categoryData = await this.categoryRepositoryInterface.findById(id_category);
+      if (!categoryData) return null;
       return categoryData;
     } catch (error) {
       throw ErrorMapper.toAppError(error);
@@ -17,6 +18,7 @@ export class FindCategoryCase {
   async executeFindAll(publicId: string): Promise<Category[] | null> {
     try {
       const categoryData = await this.categoryRepositoryInterface.findAll(publicId);
+      if (!categoryData) return null;
       return categoryData;
     } catch (error) {
       throw ErrorMapper.toAppError(error);

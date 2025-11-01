@@ -23,8 +23,8 @@ export class CategoryController {
         throw new AppError("Request body is required and must be a valid JSON object", 400);
       }
 
-      const { description, budget } = req.body;
       const { publicId } = req.params;
+      const { description, budget } = req.body;
 
       if (!description) {
         throw new AppError("Missing required field: description", 400);
@@ -41,9 +41,6 @@ export class CategoryController {
       if (typeof description !== "string") {
         throw new AppError("Description must be a string", 400);
       }
-      if (typeof budget !== "number") {
-        throw new AppError("Budget must be a number", 400);
-      }
 
       if (description.trim().length === 0) {
         throw new AppError("Description cannot be empty", 400);
@@ -51,7 +48,6 @@ export class CategoryController {
       if (budget < 0) {
         throw new AppError("Budget cannot be negative", 400);
       }
-
       const CategoryData = await this.categorycreateCase.executeCreate(req.body, publicId);
 
       return res.status(201).json({
@@ -65,22 +61,17 @@ export class CategoryController {
 
   async find(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
-      const { id_category } = req.params;
+      const { id_category, publicId } = req.params;
 
       const idNumber = Number(id_category);
 
-      if (!id_category) {
-        throw new AppError("id is missing", 404);
-      }
-      if (idNumber === undefined) {
-        throw new AppError("id is missing", 404);
-      }
+      if (!publicId) throw new AppError("publicId is missing", 400);
+
+      if (!id_category) throw new AppError("id is missing", 404);
 
       const categoryfound = await this.categoryFindCase.executeFindByid(idNumber);
 
-      if (!categoryfound) {
-        throw new AppError("Category not find", 404);
-      }
+      if (!categoryfound) throw new AppError("Category not find", 404);
 
       return res.status(201).json({ message: "category find", Category: categoryfound });
     } catch (error) {
@@ -92,9 +83,7 @@ export class CategoryController {
     try {
       const { publicId } = req.params;
 
-      if (!publicId) {
-        throw new AppError("id is missing", 404);
-      }
+      if (!publicId) throw new AppError("id is missing", 404);
 
       const allCategory = await this.categoryFindCase.executeFindAll(publicId);
 
@@ -127,32 +116,26 @@ export class CategoryController {
   async update(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       const { description, budget } = req.body;
-      const { id_category } = req.params;
+      const { id_category, publicId } = req.params;
       const descriptionStr = String(description);
       const id = Number(id_category);
       const numberBudget = Number(budget);
       const newBudget = new Amount(numberBudget);
 
-      if (!id_category) {
-        throw new AppError("Category ID is required for update", 400);
-      }
+      if (!publicId) throw new AppError("User id is missing", 400);
+
+      if (!id_category) throw new AppError("Category ID is required for update", 400);
       const categoryData = await this.categoryFindCase.executeFindByid(id);
 
-      if (!categoryData) {
-        throw new AppError("Category not  found", 404);
-      }
+      if (!categoryData) throw new AppError("Category not found", 404);
 
       const dataToUpdate: any = {};
 
-      if (description !== undefined) {
-        dataToUpdate.description = descriptionStr;
-      }
+      if (description !== undefined) dataToUpdate.description = descriptionStr;
 
-      if (budget !== undefined) {
-        dataToUpdate.budget = newBudget;
-      }
+      if (budget !== undefined) dataToUpdate.budget = newBudget;
 
-      const categroyUpdated = await this.updateCategory.executeUpdate(dataToUpdate, id);
+      const categroyUpdated = await this.updateCategory.executeUpdate(dataToUpdate, id, publicId);
 
       return res.status(201).json({ message: "category updated", Category: categroyUpdated });
     } catch (error) {

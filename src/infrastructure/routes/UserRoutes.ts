@@ -27,7 +27,7 @@ const encryptionService = new EncryptionService();
 const id = new UuidIdProvider();
 
 const deleteUser = new DeleteCases(userRepository);
-const findUser = new FindUserUseCase(userRepository);
+export const findUser = new FindUserUseCase(userRepository);
 const updateUser = new updateCase(userRepository, encryptionService);
 const createUserCase = new CreateUserCase(userRepository, id, encryptionService);
 const userController = new UserController(createUserCase, findUser, updateUser, deleteUser, tokenService, encryptionService);
