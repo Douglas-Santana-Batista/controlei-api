@@ -36,7 +36,7 @@ export class Password {
     }
   }
 
-  public toString(): string {
+  public getValue(): string {
     return this.value;
   }
 

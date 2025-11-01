@@ -6,7 +6,7 @@ import { PaymentTypeMapper } from "../mappers/PaymentTypeMapper";
 import { FinancialFlowMapper } from "../mappers/Financial_flowMapperts";
 import { toDecimal } from "../services/toDecimal";
 
-class SubCategoryRepository implements SubcategoryRepositoryInterface {
+export class SubCategoryRepository implements SubcategoryRepositoryInterface {
   private prisma: PrismaClient;
 
   constructor(prisma: PrismaClient) {

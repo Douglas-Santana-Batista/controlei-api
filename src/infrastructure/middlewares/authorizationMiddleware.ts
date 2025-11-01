@@ -15,7 +15,11 @@ export const authorizeUser: RequestHandler = (req, res, next) => {
       throw new AppError("Authentication required", 401);
     }
     const authenticatedUserId = req.user.publicId;
-    const targetUserId = req.params.publicId;
+    const targetUserId = req.params.publicId || req.query.id;
+
+    if (!targetUserId) {
+      return next();
+    }
 
     if (authenticatedUserId !== targetUserId) {
       throw new AppError("Access denied: You can only modify your own data", 403);

@@ -2,7 +2,7 @@ import { ErrorMapper } from "src/application/errors/ErrorMapper";
 import { SubcategoryRepositoryInterface } from "src/domain/interfaces/SubcategoryRepositoryInterface";
 import { AppError } from "src/shared/error/AppError";
 
-class DeleteSubCategoryCase {
+export class DeleteSubCategoryCase {
   constructor(private subcategoryInterface: SubcategoryRepositoryInterface) {}
 
   async delete(id_subcategory: number) {

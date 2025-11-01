@@ -26,9 +26,14 @@ export class CategoryController {
       const { description, budget } = req.body;
       const { publicId } = req.params;
 
-      if (!description || budget === undefined) {
-        throw new AppError("Missing required fields: description and budget", 400);
+      if (!description) {
+        throw new AppError("Missing required field: description", 400);
       }
+
+      if (budget === undefined) {
+        throw new AppError("Missing required field: budget", 400);
+      }
+
       if (!publicId) {
         throw new AppError("Missing publicId parameter", 400);
       }
@@ -47,13 +52,7 @@ export class CategoryController {
         throw new AppError("Budget cannot be negative", 400);
       }
 
-      let amountEntity: Amount;
-      let category: Category;
-
-      amountEntity = new Amount(budget);
-      category = new Category(0, description.trim(), amountEntity, new Date(), new Date());
-
-      const CategoryData = await this.categorycreateCase.executeCreate(category, publicId);
+      const CategoryData = await this.categorycreateCase.executeCreate(req.body, publicId);
 
       return res.status(201).json({
         message: "Category created successfully",

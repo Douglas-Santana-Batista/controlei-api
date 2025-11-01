@@ -32,12 +32,22 @@ export class UserRepository implements UserRepositoryInterface {
     });
 
     if (!userData) return null;
+
     return new User(userData.publicId, userData.cpf ? new Cpf(userData.cpf) : null, userData.name, new Email(userData.email), new Password(userData.password, true), userData.updatedAt, userData.createdAt);
   }
 
   async findById(publicId: string): Promise<User | null> {
     const userData = await this.prisma.user.findUnique({
       where: { publicId },
+    });
+
+    if (!userData) return null;
+    return new User(userData.publicId, userData.cpf ? new Cpf(userData.cpf) : null, userData.name, new Email(userData.email), new Password(userData.password, true), userData.updatedAt, userData.createdAt);
+  }
+
+  async findByCpf(cpf: string): Promise<User | null> {
+    const userData = await this.prisma.user.findUnique({
+      where: { cpf },
     });
 
     if (!userData) return null;

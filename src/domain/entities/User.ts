@@ -15,7 +15,7 @@ export class User {
   constructor(publicId: string, cpf: Cpf | null, name: string, email: Email, password: Password, createdAt: Date, updatedAt: Date, id_user?: number) {
     this.publicId = publicId;
     this.cpf = cpf;
-    this.name = name;
+    this.name = this.normalizeName(name);
     this.email = email;
     this.password = password;
     this.createdAt = createdAt;
@@ -38,7 +38,7 @@ export class User {
   }
 
   public getPassword(): string {
-    return this.password.toString();
+    return this.password.getValue();
   }
 
   public changeCpf(newCpf: string): string | null {
@@ -58,5 +58,21 @@ export class User {
 
   public getId(): string {
     return this.publicId;
+  }
+
+  private normalizeName(name: string): string {
+    // Remove caracteres que não sejam letras nem espaços
+    let normalized = name.replace(/[^a-zA-ZÀ-ÿ\s]/g, "");
+
+    // Remove espaços extras
+    normalized = normalized.trim().replace(/\s+/g, " ");
+
+    // Capitaliza cada palavra (ex: "douglas santana" → "Douglas Santana")
+    normalized = normalized
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+
+    return normalized;
   }
 }

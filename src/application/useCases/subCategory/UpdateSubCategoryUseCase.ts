@@ -3,7 +3,7 @@ import { Subcategory } from "src/domain/entities/Subcategory";
 import { SubcategoryRepositoryInterface } from "src/domain/interfaces/SubcategoryRepositoryInterface";
 import { AppError } from "src/shared/error/AppError";
 
-class UpdateSubCategoryUseCase {
+export class UpdateSubCategoryUseCase {
   constructor(private subcategoryInterface: SubcategoryRepositoryInterface) {}
 
   async executeUpdate(subcategory: Subcategory) {

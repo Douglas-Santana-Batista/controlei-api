@@ -7,10 +7,11 @@ import { UpdateCategoryCase } from "src/application/useCases/category/UpdateCate
 import { FindCategoryCase } from "src/application/useCases/category/FindCategoryCase";
 import { FindAllPaginatedCategoryCase } from "src/application/useCases/category/FindAllCategoryPaginedCase";
 import { DeleteCategoryCases } from "src/application/useCases/category/DeleteCategoryCases";
+import { CategoryRepositoryInterface } from "src/domain/interfaces/CategoryRepositoryInterface";
 
 export const router = Router();
 
-const categoryRepository = new CategoryRepository(prisma);
+const categoryRepository: CategoryRepositoryInterface = new CategoryRepository(prisma);
 
 const createCategory = new CreateCategoryCase(categoryRepository);
 const updateCategory = new UpdateCategoryCase(categoryRepository);

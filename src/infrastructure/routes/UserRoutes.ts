@@ -1,14 +1,17 @@
 import { Router } from "express";
-import { UserRepository } from "src/infrastructure/repositories/UserRepository";
 import { EncryptionService } from "src/infrastructure/services/EncriptionService";
 import { UserController } from "../controllers/Usercontroller";
 import { CreateUserCase } from "src/application/useCases/user/CreateUserCase";
-import prisma from "../database/prisma";
 import { UuidIdProvider } from "../services/UuidIdProvider";
 import { FindUserUseCase } from "src/application/useCases/user/FindUserCase";
 import { DeleteCases } from "src/application/useCases/user/DeleteCase";
-import { updateCase } from "src/application/useCases/user/updateCase";
 import { TokenService } from "../services/Tokenservice";
+import { authorizeUser } from "../middlewares/authorizationMiddleware";
+import { authMiddleware } from "../middlewares/authMiddleware";
+import prisma from "../database/prisma";
+import { UserRepositoryInterface } from "src/domain/interfaces/UserRepositoryInterface";
+import { UserRepository } from "../repositories/UserRepository";
+import { updateCase } from "src/application/useCases/user/updateCase";
 
 export const router = Router();
 
@@ -19,18 +22,18 @@ if (!JWT_SECRET) {
 
 const tokenService = new TokenService(JWT_SECRET);
 
-const userRepository = new UserRepository(prisma);
+const userRepository: UserRepositoryInterface = new UserRepository(prisma);
 const encryptionService = new EncryptionService();
 const id = new UuidIdProvider();
 
 const deleteUser = new DeleteCases(userRepository);
 const findUser = new FindUserUseCase(userRepository);
-const updateUser = new updateCase(userRepository);
-const createUserCase = new CreateUserCase(userRepository);
-const userController = new UserController(createUserCase, findUser, updateUser, deleteUser, id, encryptionService, tokenService);
+const updateUser = new updateCase(userRepository, encryptionService);
+const createUserCase = new CreateUserCase(userRepository, id, encryptionService);
+const userController = new UserController(createUserCase, findUser, updateUser, deleteUser, tokenService, encryptionService);
 
-router.post("/login", (req, res, next) => userController.login(req, res, next));
-router.post("/register", (req, res, next) => userController.create(req, res, next));
-router.get("/find/", (req, res, next) => userController.find(req, res, next));
-router.delete("/deleteUser/:publicId", (req, res, next) => userController.delete(req, res, next));
-router.put("/updateUser/:publicId", (req, res, next) => userController.update(req, res, next));
+router.post("/login", userController.login.bind(userController));
+router.post("/register", userController.create.bind(userController));
+router.get("/find", authMiddleware, authorizeUser, userController.find.bind(userController));
+router.delete("/deleteUser/:publicId", authMiddleware, authorizeUser, userController.delete.bind(userController));
+router.put("/updateUser/:publicId", authMiddleware, authorizeUser, userController.update.bind(userController));
