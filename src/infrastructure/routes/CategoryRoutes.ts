@@ -9,6 +9,8 @@ import { FindAllPaginatedCategoryCase } from "src/application/useCases/category/
 import { DeleteCategoryCases } from "src/application/useCases/category/DeleteCategoryCases";
 import { CategoryRepositoryInterface } from "src/domain/interfaces/CategoryRepositoryInterface";
 import { findUser } from "./UserRoutes";
+import { authorizeUser } from "../middlewares/authorizationMiddleware";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 export const router = Router();
 
@@ -22,9 +24,9 @@ const deleteCategory = new DeleteCategoryCases(categoryRepository);
 
 const categoryController = new CategoryController(createCategory, findCategory, updateCategory, deleteCategory, findAllCategory);
 
-router.post("/createCategory/:publicId", (req, res, next) => categoryController.create(req, res, next));
-router.get("/findCategory/:id_category/:publicId", (req, res, next) => categoryController.find(req, res, next));
-router.get("/findAllCategory/:publicId", (req, res, next) => categoryController.findAll(req, res, next));
-router.get("/findAllCategoryPaigined/:page/:limit/:publicId", (req, res, next) => categoryController.findAllPaginated(req, res, next));
-router.put("/updateCategory/:id_category/:publicId", (req, res, next) => categoryController.update(req, res, next));
-router.delete("/deleteCategory/:id_category/:publicId", (req, res, next) => categoryController.delete(req, res, next));
+router.post("/createCategory/:publicId", authMiddleware, authorizeUser, categoryController.create.bind(categoryController));
+router.get("/findCategory/:id_category/:publicId", authMiddleware, authorizeUser, categoryController.find.bind(categoryController));
+router.get("/findAllCategory/:publicId", authMiddleware, authorizeUser, categoryController.findAll.bind(categoryController));
+router.get("/findAllCategoryPaigined/:page/:limit/:publicId", authMiddleware, authorizeUser, categoryController.findAllPaginated.bind(categoryController));
+router.put("/updateCategory/:id_category/:publicId", authMiddleware, authorizeUser, categoryController.update.bind(categoryController));
+router.delete("/deleteCategory/:id_category/:publicId", authMiddleware, authorizeUser, categoryController.delete.bind(categoryController));
