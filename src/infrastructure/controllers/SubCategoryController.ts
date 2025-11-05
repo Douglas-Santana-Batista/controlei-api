@@ -36,4 +36,14 @@ export class SubCategoryController {
       next(error);
     }
   }
+
+  async find(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try {
+      if (!req.body || typeof req.body !== "object" || Object.keys(req.body).length === 0) {
+        throw new AppError("Request body is required and must be a valid JSON object", 400);
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
 }

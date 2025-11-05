@@ -5,27 +5,17 @@ export class Category {
   public readonly id_category: number;
   public description: string;
   public budget: Amount;
-  public userPublicId: string;
   public createdAt: Date;
   public updatedAt: Date;
 
-  constructor(id_category: number, name: string, budget: Amount, userPublicId: string, createdAt: Date, updatedAt: Date) {
+  constructor(id_category: number, name: string, budget: Amount, createdAt: Date, updatedAt: Date) {
     this.id_category = id_category;
     this.description = name;
-    this.userPublicId = userPublicId;
     this.budget = budget;
 
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
     this.validate();
-  }
-
-  public belongsToUser(userPublicId: string): boolean {
-    return this.userPublicId === userPublicId;
-  }
-
-  public getUserPublicId(): string {
-    return this.userPublicId;
   }
 
   public getAmount(): number {

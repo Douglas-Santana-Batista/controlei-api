@@ -13,7 +13,7 @@ export class CreateCategoryCase {
     try {
       const entityAmount = new Amount(category.budget);
 
-      const newCategory = new Category(0, category.description, entityAmount, publicId, new Date(), new Date());
+      const newCategory = new Category(0, category.description, entityAmount, new Date(), new Date());
       const categoryData = await this.categoryRepositoryInterface.create(newCategory, publicId);
       return categoryData;
     } catch (error) {

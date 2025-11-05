@@ -15,7 +15,6 @@ export class CategoryRepository implements CategoryRepositoryInterface {
     const budgetDecimal = new Prisma.Decimal(category.getAmount());
     const categoryData = await this.prisma.category.create({
       data: {
-        userPublicId: publicId,
         description: category.getName(),
         budget: budgetDecimal,
         user: {
@@ -23,7 +22,7 @@ export class CategoryRepository implements CategoryRepositoryInterface {
         },
       },
     });
-    return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget ? categoryData.budget.toNumber() : 0), categoryData.userPublicId, categoryData.createdAt, categoryData.updatedAt);
+    return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget ? categoryData.budget.toNumber() : 0), categoryData.createdAt, categoryData.updatedAt);
   }
 
   async findById(id_category: number): Promise<Category | null> {
@@ -33,16 +32,18 @@ export class CategoryRepository implements CategoryRepositoryInterface {
 
     if (!categoryData) return null;
 
-    return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget ? categoryData.budget.toNumber() : 0), categoryData.userPublicId, categoryData.updatedAt, categoryData.createdAt);
+    return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget ? categoryData.budget.toNumber() : 0), categoryData.updatedAt, categoryData.createdAt);
   }
 
   async findAll(publicId: string): Promise<Category[]> {
     const categoriesData = await this.prisma.category.findMany({
-      where: { userPublicId: publicId },
+      where: {
+        user: { publicId },
+      },
     });
 
     return categoriesData.map((categoryData) => {
-      return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget ? categoryData.budget.toNumber() : 0), categoryData.userPublicId, categoryData.createdAt, categoryData.updatedAt);
+      return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget ? categoryData.budget.toNumber() : 0), categoryData.createdAt, categoryData.updatedAt);
     });
   }
 
@@ -88,7 +89,7 @@ export class CategoryRepository implements CategoryRepositoryInterface {
       },
     });
 
-    return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget ? categoryData.budget.toNumber() : 0), updateData.userPublicId, categoryData.createdAt, categoryData.updatedAt);
+    return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget ? categoryData.budget.toNumber() : 0), categoryData.createdAt, categoryData.updatedAt);
   }
 
   async delete(id_category: number): Promise<void> {
@@ -98,6 +99,6 @@ export class CategoryRepository implements CategoryRepositoryInterface {
   }
 
   private toDomain(categoryData: any): Category {
-    return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget?.toNumber() ?? 0), categoryData.userPublicId, categoryData.createdAt, categoryData.updatedAt);
+    return new Category(categoryData.id_category, categoryData.description, new Amount(categoryData.budget?.toNumber() ?? 0), categoryData.createdAt, categoryData.updatedAt);
   }
 }

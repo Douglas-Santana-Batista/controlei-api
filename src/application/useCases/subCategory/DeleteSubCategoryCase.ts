@@ -8,9 +8,8 @@ export class DeleteSubCategoryCase {
   async delete(id_subcategory: number) {
     try {
       const existingSubcategory = await this.subcategoryInterface.findById(id_subcategory);
-      if (!existingSubcategory) {
-        throw new AppError("Subcategory not found", 404);
-      }
+
+      if (!existingSubcategory) throw new AppError("Subcategory not found", 404);
 
       await this.subcategoryInterface.delete(id_subcategory);
     } catch (error) {
