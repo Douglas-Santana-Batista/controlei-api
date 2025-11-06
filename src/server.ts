@@ -5,6 +5,7 @@ import SwaggerUi from "swagger-ui-express";
 import swaggerDoc from "./swagger.json";
 import { router as userRouter } from "./infrastructure/routes/UserRoutes";
 import { router as categoryRouter } from "./infrastructure/routes/CategoryRoutes";
+import { router as subcategoryRouter } from "./infrastructure/routes/SubCategoryRoutes";
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
@@ -17,6 +18,7 @@ dotenv.config();
 
 app.use(userRouter);
 app.use(categoryRouter);
+app.use(subcategoryRouter);
 
 app.use(errorHandler);
 

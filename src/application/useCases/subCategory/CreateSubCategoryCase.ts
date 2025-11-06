@@ -8,8 +8,10 @@ export class CreateSubCategoryCase {
 
   async executeCreate(subcategory: Subcategory, id_category: number, publicId: string) {
     try {
-      const valueEntity = new Amount(subcategory.returnValue);
-      const subCategoryEntity = new Subcategory(subcategory.id_subcategory, subcategory._description, valueEntity, subcategory.payment_type, subcategory.financialFlow, subcategory.createdAt, subcategory.updatedAt);
+      const numericValue = Number(subcategory.value);
+      const valueEntity = new Amount(numericValue);
+
+      const subCategoryEntity = new Subcategory(subcategory.id_subcategory, subcategory.description, valueEntity, subcategory.payment_type, subcategory.financialFlow, subcategory.createdAt, subcategory.updatedAt);
 
       const subCategoryData = await this.subCategoryRepository.create(subCategoryEntity, id_category, publicId);
 

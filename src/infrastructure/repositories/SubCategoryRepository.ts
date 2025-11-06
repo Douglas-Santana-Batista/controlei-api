@@ -16,7 +16,7 @@ export class SubCategoryRepository implements SubcategoryRepositoryInterface {
   async create(subcategory: Subcategory, id_category: number, publicId: string): Promise<Subcategory> {
     const valueDecimal = toDecimal(subcategory.returnValue);
 
-    const prismaPaymentType = PaymentTypeMapper.toPrisma(subcategory.paymentType);
+    const prismaPaymentType = PaymentTypeMapper.toPrisma(subcategory.getpaymentType);
     const prismaFinancialFlow = FinancialFlowMapper.toPrisma(subcategory.financialFlow);
 
     const subCategoryData = await this.prisma.subcategory.create({
@@ -74,10 +74,9 @@ export class SubCategoryRepository implements SubcategoryRepositoryInterface {
     });
   }
 
-  async update(subcategory: Subcategory): Promise<Subcategory> {
-    const prismaPaymentType = PaymentTypeMapper.toPrisma(subcategory.paymentType);
+  async update(subcategory: Subcategory, id_subcategory: number): Promise<Subcategory> {
+    const prismaPaymentType = PaymentTypeMapper.toPrisma(subcategory.getpaymentType);
     const prismaFinancialFlow = FinancialFlowMapper.toPrisma(subcategory.financialFlow);
-    const id = subcategory.id_subcategory;
 
     const dataToUpdate: any = {
       description: subcategory.description,
@@ -88,7 +87,7 @@ export class SubCategoryRepository implements SubcategoryRepositoryInterface {
     };
 
     const update = await this.prisma.subcategory.update({
-      where: { id_subcategory: id },
+      where: { id_subcategory },
       data: dataToUpdate,
     });
 

@@ -37,6 +37,7 @@ export class Amount {
 
   private validate(amount: number): void {
     if (isNaN(amount)) {
+      console.log(amount);
       throw new InvalidAmountError("Amount must be a valid number. Examples: '100.50', '100,50', 100.50");
     }
     if (amount < 0) {

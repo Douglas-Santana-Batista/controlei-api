@@ -28,11 +28,18 @@ export class Subcategory {
     return this._description;
   }
 
-  get paymentType(): PaymentType {
+  get getpaymentType(): PaymentType {
     return this.payment_type;
   }
 
   private validate(): void {
+    if (this.payment_type) {
+      this.payment_type = this.payment_type.toString().toUpperCase() as PaymentType;
+    }
+
+    if (this.financialFlow) {
+      this.financialFlow = this.financialFlow.toString().toUpperCase() as Financial_Flow;
+    }
     if (this._description.length <= 0) {
       throw new InvalidAmountError("Description must be greater than zero");
     }
