@@ -1,12 +1,13 @@
 import { NextFunction, Response, Request } from "express";
 import { CreateSubCategoryCase } from "src/application/useCases/subCategory/CreateSubCategoryCase";
+import { DeleteSubCategoryCase } from "src/application/useCases/subCategory/DeleteSubCategoryCase";
 import { FindSubCategoryCase } from "src/application/useCases/subCategory/FindSubcategoryCase";
 import { UpdateSubCategoryUseCase } from "src/application/useCases/subCategory/UpdateSubCategoryUseCase";
 import { AppError } from "src/shared/error/AppError";
 import { number } from "zod";
 
 export class SubCategoryController {
-  constructor(private createSubcategoryCase: CreateSubCategoryCase, private findSubcategoryCase: FindSubCategoryCase, private updateSubcategory: UpdateSubCategoryUseCase) {}
+  constructor(private createSubcategoryCase: CreateSubCategoryCase, private findSubcategoryCase: FindSubCategoryCase, private updateSubcategory: UpdateSubCategoryUseCase, private deleteSubcategory: DeleteSubCategoryCase) {}
 
   async create(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
@@ -87,6 +88,22 @@ export class SubCategoryController {
 
       const subcategoryUpdated = await this.updateSubcategory.executeUpdate(dataToUpdate, idNumber);
       return res.status(200).json({ message: "SubCategory updated", subcategoryUpdated });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async delete(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try {
+      const { publicId, id_subcategory } = req.params;
+
+      if (!publicId) throw new AppError("User id is required", 400);
+      if (!id_subcategory) throw new AppError("SubCategory is requires", 400);
+
+      const idSubcategory = Number(id_subcategory);
+
+      await this.deleteSubcategory.delete(idSubcategory);
+      res.status(200).json({ message: "Subcategory deleted" });
     } catch (error) {
       next(error);
     }
